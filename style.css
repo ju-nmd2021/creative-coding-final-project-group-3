@@ -1,0 +1,80 @@
+
+body {
+    background-color: black;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+}
+
+h1, h2{
+    font-family: sans-serif;
+    color: white;
+    align-content: center;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+
+#uploadSong {
+    color: white;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+p {
+    color: white;
+}
+
+#home-content {
+    width: 40%;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    border: white;
+    border-width: thick;
+    border-radius: 2%;
+    border-style: solid;
+    
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    height: 100vh;
+}
+
+#generateBtn {
+    width: 20%;
+    height: 50px;
+}
+
+#child-top {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#child-bottom {
+    margin-bottom: 5%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+}

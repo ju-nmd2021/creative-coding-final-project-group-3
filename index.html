@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audio Visualizer</title>
+    <script src="http://unpkg.com/tone" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.js"></script>
+    <script src="script.js" defer></script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+      <main>
+        <div class="background-container" id="home-content">
+            <div id="child-top">
+            <h1>Audio Visual Generator</h1>
+
+            <h2>Upload your favorite song:</h2>
+            <form id = "uploadSong" method="post" enctype="multipart/form-data">
+                <input name="songFile" type="file" multiple>
+            </form>
+             </div>
+            
+            <div id="child-bottom">
+            <h2>What genre is your song?</h2>
+            <select id="genre-select">
+                <option value="blank">---</option>
+                <option value="rock">Rock</option>
+                <option value="pop">Pop</option>
+                <option value="hiphop">Hiphop</option>
+                <option value="alternative">Alternative</option>
+                <option value="jazz">Jazz</option>
+            </select>
+            </div>
+
+            <button id="generateBtn">Generate</button>
+        </div>
+      
+      </main>
+</body>
+</html>
