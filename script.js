@@ -9,6 +9,7 @@ let button = document.getElementById('generateBtn')
 let fileInput = document.querySelector('input[type="file"]');
 
 
+
 //Use uploaded file as audio source 
 function handleFileUpload(event) {
     const file = event.target.files[0];
@@ -21,9 +22,7 @@ function handleFileUpload(event) {
 fileInput.addEventListener('change', handleFileUpload);
 
 
-
-
-
+//Intial Screen Set up 
 function setup() {
     let homeContent = document.getElementById('home-content')
     if (state===1) {
@@ -33,20 +32,26 @@ function setup() {
         imageMode(CENTER)
         fft = new p5.FFT()
         noLoop()
-        generatorScreen();
     } else if (state===0)
     homeContent.style.display = "flex";
     };
 
+    
+  
 
-if (state===0) {
-
+   
     button.addEventListener('click', function(){
+        console.log("Button clicked");
         song.play();
-        state === 1;
-     })
+        state = 1;
+        console.log("State changed to 1");
+        generatorScreen();
+     }) 
 
-} else if (state===1) {
+    
+
+
+
 
 function generatorScreen() {
 //Draws the waveform onto the canvas 
@@ -57,7 +62,7 @@ function generatorScreen() {
     
     translate(width / 2, height / 2)
 
-    fft.analyze( )
+    fft.analyze()
     amp = fft.getEnergy(20, 200)
 
    
@@ -96,7 +101,7 @@ function generatorScreen() {
         particles[i].show()
     }
 };
-}
+
 
 //Particles that generate randomly 
 class Particle {
