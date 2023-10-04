@@ -6,10 +6,22 @@ let bgImages = []
 let genres = []
 let state = 0; 
 let button = document.getElementById('generateBtn')
+let fileInput = document.querySelector('input[type="file"]');
 
-function preload() {
-    song = loadSound("songFile");
-    };
+
+//Use uploaded file as audio source 
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        song = loadSound(URL.createObjectURL(file));
+        button.disabled = false;
+    }
+}
+
+fileInput.addEventListener('change', handleFileUpload);
+
+
+
 
 
 function setup() {
