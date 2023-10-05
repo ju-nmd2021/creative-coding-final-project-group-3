@@ -1,25 +1,16 @@
 
-let song;
+let song; 
 let fft;
 let particles = []
 let bgImages = []
 let genres = []
 let state = 0; 
 let button = document.getElementById('generateBtn')
-let fileInput = document.querySelector('input[type="file"]');
 
 
-
-//Use uploaded file as audio source 
-function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-        song = loadSound(URL.createObjectURL(file));
-        button.disabled = false;
-    }
-}
-
-fileInput.addEventListener('change', handleFileUpload);
+// function preload() {
+//     song = loadSound("songFile");
+//     };
 
 
 //Intial Screen Set up 
@@ -36,8 +27,6 @@ function setup() {
     homeContent.style.display = "flex";
     };
 
-    
-  
 
    
     button.addEventListener('click', function(){
@@ -49,9 +38,6 @@ function setup() {
      }) 
 
     
-
-
-
 
 function generatorScreen() {
 //Draws the waveform onto the canvas 
