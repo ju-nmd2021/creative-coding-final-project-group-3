@@ -1,4 +1,3 @@
-
 let song; 
 let fft;
 let genres = []
@@ -9,6 +8,12 @@ let button = document.getElementById('generateBtn')
 let homeContent = document.getElementById('home-content')
 
 
+let genreStyles = {
+    pop: {
+        backgroundGradient: "linear-gradient(rgba(255, 100, 100, 1), rgba(255, 200, 200, 1))",
+        shapeColor: "rgba(255, 0, 0)",
+    },
+}
 
 //load audio source 
 function preload() {
@@ -17,7 +22,25 @@ function preload() {
 
 //Function that generates waveform artwork 
 function generateArt() {
+    let selectedGenre = document.getElementById('genre-select').value;
+
     //---------------------------Draws the waveform onto the canvas 
+
+    if (genreStyles.hasOwnProperty(selectedGenre)) {
+        let genreStyle = genreStyles[selectedGenre];
+        background(genreStyle.backgroundGradient);
+        stroke(genreStyle.shapeColor);
+        strokeWeight(3);
+        noFill();
+        translate(width / 2, height / 2);
+        
+        // The rest of your generateArt function remains the same
+        // ...
+    } else {
+        // Handle the case when an invalid genre is selected
+        alert('Please select a valid genre.');
+    }
+
     background(0);
     stroke(255);
     strokeWeight(3)
@@ -84,13 +107,27 @@ class Particle {
 button.addEventListener('click', function(){
     if (state===0) {
     state = 1;
-
     createCanvas(innerWidth, innerHeight);
     fft = new p5.FFT()
     song.play();
-   
     }
 }) 
+
+// Function to create a gradient background
+function createGradient(c1, c2) {
+    let gradient = createGraphics(width, height);
+    gradient.background(255);
+    gradient.stroke(0);
+    gradient.fill(0);
+    for (let i = 0; i < height; i++) {
+        let inter = map(i, 0, height, 0, 1);
+        let c = lerpColor(c1, c2, inter);
+        gradient.stroke(c);
+        gradient.line(0, i, width, i);
+    }
+    return gradient;
+}
+
 
 //Artwork is drawn onto canvas in the correct state 
 function draw() {
@@ -101,12 +138,10 @@ if (state===1) {
     angleMode(DEGREES)
     imageMode(CENTER)
     generateArt();
-    
     } else if (state===0)
     homeContent.style.display = "flex";
     ;
 }
-
 
 
 
