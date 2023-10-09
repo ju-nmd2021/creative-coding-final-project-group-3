@@ -1,19 +1,12 @@
 let song; 
 let fft;
-let genres = []
-let bgImages = []
 let particles = []
 let state = 0; 
 let button = document.getElementById('generateBtn')
 let homeContent = document.getElementById('home-content')
 
 
-let genreStyles = {
-    pop: {
-        backgroundGradient: "linear-gradient(rgba(255, 100, 100, 1), rgba(255, 200, 200, 1))",
-        shapeColor: "rgba(255, 0, 0)",
-    },
-}
+
 
 //load audio source 
 function preload() {
@@ -22,38 +15,29 @@ function preload() {
 
 //Function that generates waveform artwork 
 function generateArt() {
+    let gradientStyle = "";
     let selectedGenre = document.getElementById('genre-select').value;
-
-    //---------------------------Draws the waveform onto the canvas 
-
-    if (genreStyles.hasOwnProperty(selectedGenre)) {
-        let genreStyle = genreStyles[selectedGenre];
-        background(genreStyle.backgroundGradient);
-        stroke(genreStyle.shapeColor);
-        strokeWeight(3);
-        noFill();
-        translate(width / 2, height / 2);
-        
-        // The rest of your generateArt function remains the same
-        // ...
-    } else {
-        // Handle the case when an invalid genre is selected
-        alert('Please select a valid genre.');
-    }
-
-    background(0);
-    stroke(255);
-    strokeWeight(3)
-    noFill();
-    translate(width / 2, height / 2)
-
+   
     fft.analyze()
     amp = fft.getEnergy(20, 200)
+    //---------------------------Draws the waveform onto the canvas 
+
+    
+    
+    if (selectedGenre === 'pop') {
+        
+        gradientStyle = "linear-gradient(to bottom, rgba(150, 90, 100, 1), rgba(255, 200, 200, 1))";
+        stroke(Math.random() * 100, 90, 100);
+        document.body.style.background = gradientStyle;
+        frameRate(10)
+        translate(width / 2, height / 2)
+        strokeWeight(50)
+        noFill();
 
     //---------------------------defines the shape being drawn 
     let wave = fft.waveform()
     
-    for (var t = -1; t <= 1; t += 2) {
+     for (var t = -1; t <= 1; t += 2) {
         beginShape()
         for (let i = 0; i <= 180; i += 0.1) {
             let index = floor(map(i, 0, 180, 0, wave.length - 1))
@@ -65,6 +49,7 @@ function generateArt() {
         endShape()
     }
     
+
     //---------------------------Generates the particles that move away from the waveform 
     let p = new Particle();
     particles.push(p)
@@ -73,9 +58,71 @@ function generateArt() {
         particles[i].update(amp > 230)
         particles[i].show()
     }
+
+    stroke(200);
+    strokeWeight(100)
+
+
+
+
+
+
+
+
+
+
+
+
+    } else if (selectedGenre === 'rock') {
+        background(50, 120, 21)
+    } else if (selectedGenre === 'jazz') {
+        background(10, 10, 200)
+    } else if (selectedGenre === 'hiphop') {
+        background(4, 150, 43)
+    } else if (selectedGenre === 'alternative') {
+        background(1, 200, 100)
+    } else
+
+    background(0);
+    stroke(255);
+    strokeWeight(3)
+    noFill();
+    
+
+    //---------------------------defines the shape being drawn 
+    // let wave = fft.waveform()
+    
+    // for (var t = -1; t <= 1; t += 2) {
+    //     beginShape()
+    //     for (let i = 0; i <= 180; i += 0.1) {
+    //         let index = floor(map(i, 0, 180, 0, wave.length - 1))
+    //         let r = map(wave[index], -1, 1, 150, 350)
+    //         let x = r * sin(i) * t
+    //         let y = r * cos(i)
+    //         vertex(x, y)
+    //     } 
+    //     endShape()
+    // }
+    
+    //---------------------------Generates the particles that move away from the waveform 
+    // let p = new Particle();
+    // particles.push(p)
+
+    // for (let i = 0; i < particles.length; i++) {
+    //     particles[i].update(amp > 230)
+    //     particles[i].show()
+    // }
+
+
+
+
+
+
 };
 
 //Randomly generated particles 
+
+
 class Particle {
     constructor() {
         this.pos = p5.Vector.random2D().mult(250)
@@ -97,9 +144,13 @@ class Particle {
    
     //---------------------------Shows the particles on the canvas 
     show() {
-        noStroke()
-        fill(255)
-        ellipse(this.pos.x, this.pos.y, 4)
+        let selectedGenre = document.getElementById('genre-select').value;
+        if (selectedGenre === 'pop') {
+            stroke(100, 90, 100)
+            strokeWeight(5)
+            fill(150)
+            ellipse(this.pos.x, this.pos.y, 4)
+        }
     }
 }
 
@@ -112,21 +163,6 @@ button.addEventListener('click', function(){
     song.play();
     }
 }) 
-
-// Function to create a gradient background
-function createGradient(c1, c2) {
-    let gradient = createGraphics(width, height);
-    gradient.background(255);
-    gradient.stroke(0);
-    gradient.fill(0);
-    for (let i = 0; i < height; i++) {
-        let inter = map(i, 0, height, 0, 1);
-        let c = lerpColor(c1, c2, inter);
-        gradient.stroke(c);
-        gradient.line(0, i, width, i);
-    }
-    return gradient;
-}
 
 
 //Artwork is drawn onto canvas in the correct state 
