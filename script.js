@@ -2,10 +2,10 @@ let song;
 let fft;
 let particles = []
 let state = 0; 
+let fade = 255;
+let fadeAmount = -1;
 let button = document.getElementById('generateBtn')
 let homeContent = document.getElementById('home-content')
-
-
 
 
 //load audio source 
@@ -25,14 +25,16 @@ function generateArt() {
     
     
     if (selectedGenre === 'pop') {
-        
+        let fade = 255;
         gradientStyle = "linear-gradient(to bottom, rgba(150, 90, 100, 1), rgba(255, 200, 200, 1))";
-        stroke(Math.random() * 100, 90, 100);
+        stroke(Math.random() * 100, 90, 100, fade);
         document.body.style.background = gradientStyle;
         frameRate(10)
         translate(width / 2, height / 2)
         strokeWeight(50)
         noFill();
+
+  
 
     //---------------------------defines the shape being drawn 
     let wave = fft.waveform()
@@ -46,10 +48,10 @@ function generateArt() {
             let y = r * cos(i)
             vertex(x, y)
         } 
+  
         endShape()
     }
     
-
     //---------------------------Generates the particles that move away from the waveform 
     let p = new Particle();
     particles.push(p)
@@ -59,19 +61,9 @@ function generateArt() {
         particles[i].show()
     }
 
-    stroke(200);
+    stroke(200, 100, 50, fade);
     strokeWeight(100)
-
-
-
-
-
-
-
-
-
-
-
+  
 
     } else if (selectedGenre === 'rock') {
         background(50, 120, 21)
@@ -88,6 +80,10 @@ function generateArt() {
     strokeWeight(3)
     noFill();
     
+  
+
+  
+
 
     //---------------------------defines the shape being drawn 
     // let wave = fft.waveform()
@@ -146,9 +142,9 @@ class Particle {
     show() {
         let selectedGenre = document.getElementById('genre-select').value;
         if (selectedGenre === 'pop') {
-            stroke(100, 90, 100)
+            stroke(100, 90, 100, fade)
             strokeWeight(5)
-            fill(150)
+            fill(150, 100, 90, fade)
             ellipse(this.pos.x, this.pos.y, 4)
         }
     }
@@ -165,15 +161,30 @@ button.addEventListener('click', function(){
 }) 
 
 
+function fadeArt() {
+    fade += fadeAmount;
+
+    if (fade<0) {
+        fadeAmount = 0
+    } 
+
+    print(fade)
+}
+
+
 //Artwork is drawn onto canvas in the correct state 
 function draw() {
-
     //--------------------------After button is clicked, artwork is generated
 if (state===1) {
     homeContent.style.display = "none"
     angleMode(DEGREES)
     imageMode(CENTER)
     generateArt();
+    fadeArt();
+
+   
+   
+
     } else if (state===0)
     homeContent.style.display = "flex";
     ;
