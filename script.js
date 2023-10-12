@@ -58,29 +58,29 @@ function generateArt() {
         }
     }
 
-    //---------------------------Inserts 
+    //---------------------------Inserts gradient based on the selected color range 
     gradientStyle = `linear-gradient(to bottom, rgba(${genreColorRange.color1[0]}, ${genreColorRange.color1[1]}, ${genreColorRange.color1[2]}, 1), rgba(${genreColorRange.color2[0]}, ${genreColorRange.color2[1]}, ${genreColorRange.color2[2]}, 1))`
 
     
+    //---------------------------Defines the attributes and waveform for the 'POP' genre 
     if (selectedGenre === 'pop') {
         let fade = 255;
-        stroke(Math.random() * 100, 90, 100, fade);
+        stroke(popColor2, fade)
         document.body.style.background = gradientStyle;
         frameRate(10)
         translate(width / 2, height / 2)
         strokeWeight(50)
-        noFill();
+        fill(popColor1)
 
-  
-    //---------------------------defines the shape being drawn 
+    //---------------------------Pop Waveform 
     let wave = fft.waveform()
     
      for (var t = -1; t <= 1; t += 2) {
         beginShape()
         for (let i = 0; i <= 180; i += 0.1) {
-            let index = floor(map(i, 0, 180, 0, wave.length - 1))
-            let r = map(wave[index], -1, 1, 150, 350)
-            let x = r * sin(i) * t
+            let index = floor(map(i, 0, 200, 0, wave.length - 1))
+            let r = map(wave[index], -1, 1, 1, 3)
+            let x = r * sin(i) 
             let y = r * cos(i)
             vertex(x, y)
         } 
@@ -97,22 +97,19 @@ function generateArt() {
         particles[i].show()
     }
 
-    stroke(200, 100, 50, fade);
+    stroke(popColor2);
     strokeWeight(100)
   
-
-
-
 
     } else if (selectedGenre === 'rock') {
 
         let fade = 255;
-        stroke(Math.random() * 100, 90, 100, fade);
+        stroke(rockColor1);
         document.body.style.background = gradientStyle;
         frameRate(10)
         translate(width / 2, height / 2)
         strokeWeight(50)
-        noFill();
+        fill(rockColor2)
 
     //---------------------------defines the shape being drawn 
     let wave = fft.waveform()
@@ -195,10 +192,18 @@ function generateArt() {
 
 class Particle {
     constructor() {
-        this.pos = p5.Vector.random2D().mult(250)
-        this.vel = createVector(0, 0)
-        this.acc = this.pos.copy().mult(random(0.0001, 0.00001))
-        this.w = random(3, 5)
+        let selectedGenre = document.getElementById('genre-select').value;
+        if (selectedGenre === 'pop') {
+        this.pos = p5.Vector.random2D().mult(400)
+        this.vel = createVector(Math.random() * 50, Math.random() * 50)
+        this.acc = this.pos.copy().mult(random(0.0005, 0.00001))
+        this.w = random(10, 7)
+        } else if (selectedGenre === 'rock') {
+            this.pos = p5.Vector.random2D().mult(Math.random() * 250)
+            this.vel = createVector(0, 0)
+            this.acc = this.pos.copy().mult(random(0.0001, 0.00001))
+            this.w = random(3, 5)
+        }
     }
 
     //---------------------------pushes the particles away when the volume reaches a certain level
@@ -216,9 +221,14 @@ class Particle {
     show() {
         let selectedGenre = document.getElementById('genre-select').value;
         if (selectedGenre === 'pop') {
-            stroke(100, 90, 100, fade)
+            stroke(popColor2, fade)
             strokeWeight(5)
-            fill(150, 100, 90, fade)
+            fill(popColor1)
+            ellipse(this.pos.x, this.pos.y, 4)
+        } else if (selectedGenre === 'rock') {
+            stroke(rockColor2, fade)
+            strokeWeight(5)
+            fill(rockColor1)
             ellipse(this.pos.x, this.pos.y, 4)
         }
     }
