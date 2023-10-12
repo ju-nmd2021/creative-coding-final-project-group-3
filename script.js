@@ -8,6 +8,26 @@ let button = document.getElementById('generateBtn')
 let homeContent = document.getElementById('home-content')
 
 
+//establish the ranges of colors for each genre 
+const popColorRange = [
+  [0, 0, 255],   // Blue
+  [0, 255, 255], // Cyan
+  [255, 0, 255]  // Magenta
+]
+const rockColorRange = [
+    [255, 0, 0],   // Red
+    [0, 0, 0],     // Black
+    [255, 165, 0], // Orange
+    [255, 255, 0], // Yellow
+  ]
+
+//stores random values into genre color variables based on the established range 
+const popColor1 = popColorRange[Math.floor(Math.random() * popColorRange.length)];
+const popColor2 = popColorRange[Math.floor(Math.random() * popColorRange.length)];
+
+const rockColor1 = rockColorRange[Math.floor(Math.random() * rockColorRange.length)];
+const rockColor2 = rockColorRange[Math.floor(Math.random() * rockColorRange.length)];
+
 //load audio source 
 function preload() {
     song = loadSound("HPST - 002.mp3");
@@ -15,18 +35,35 @@ function preload() {
 
 //Function that generates waveform artwork 
 function generateArt() {
-    let gradientStyle = "";
     let selectedGenre = document.getElementById('genre-select').value;
+    let gradientStyle = ""
    
     fft.analyze()
     amp = fft.getEnergy(20, 200)
     //---------------------------Draws the waveform onto the canvas 
 
-    
+    //---------------------------Creates empty object for the color range 
+    let genreColorRange = {};
+
+    //---------------------------Conditions for what range should be displayed for which genre 
+    if (selectedGenre === 'pop') {
+        genreColorRange = {
+            color1: popColor1,
+            color2: popColor2
+        };
+    } else if (selectedGenre === 'rock') {
+        genreColorRange = {
+            color1: rockColor1,
+            color2: rockColor2
+        }
+    }
+
+    //---------------------------Inserts 
+    gradientStyle = `linear-gradient(to bottom, rgba(${genreColorRange.color1[0]}, ${genreColorRange.color1[1]}, ${genreColorRange.color1[2]}, 1), rgba(${genreColorRange.color2[0]}, ${genreColorRange.color2[1]}, ${genreColorRange.color2[2]}, 1))`
+
     
     if (selectedGenre === 'pop') {
         let fade = 255;
-        gradientStyle = "linear-gradient(to bottom, rgba(150, 90, 100, 1), rgba(255, 200, 200, 1))";
         stroke(Math.random() * 100, 90, 100, fade);
         document.body.style.background = gradientStyle;
         frameRate(10)
@@ -35,7 +72,6 @@ function generateArt() {
         noFill();
 
   
-
     //---------------------------defines the shape being drawn 
     let wave = fft.waveform()
     
@@ -65,8 +101,46 @@ function generateArt() {
     strokeWeight(100)
   
 
+
+
+
     } else if (selectedGenre === 'rock') {
-        background(50, 120, 21)
+
+        let fade = 255;
+        stroke(Math.random() * 100, 90, 100, fade);
+        document.body.style.background = gradientStyle;
+        frameRate(10)
+        translate(width / 2, height / 2)
+        strokeWeight(50)
+        noFill();
+
+    //---------------------------defines the shape being drawn 
+    let wave = fft.waveform()
+    
+     for (var t = -1; t <= 1; t += 2) {
+        beginShape()
+        for (let i = 0; i <= 180; i += 0.1) {
+            let index = floor(map(i, 0, 180, 0, wave.length - 1))
+            let r = map(wave[index], -1, 1, 150, 350)
+            let x = r * sin(i) * t
+            let y = r * cos(i)
+            vertex(x, y)
+        } 
+  
+        endShape()
+    }
+    
+    //---------------------------Generates the particles that move away from the waveform 
+    let p = new Particle();
+    particles.push(p)
+
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update(amp > 230)
+        particles[i].show()
+    }
+
+    stroke(200, 100, 50, fade);
+    strokeWeight(100)
     } else if (selectedGenre === 'jazz') {
         background(10, 10, 200)
     } else if (selectedGenre === 'hiphop') {
