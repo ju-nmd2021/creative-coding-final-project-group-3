@@ -57,12 +57,32 @@ function preload() {
 class popParticle {
     constructor() {
         let selectedGenre = document.getElementById('genre-select').value;
-        if (selectedGenre === 'pop') {
+        if (selectedGenre === 'pop' && rndPopInt === 1) {
         this.pos = p5.Vector.random2D().mult(Math.random() * 5)
         this.vel = createVector(Math.random() * 0.5000, Math.random() * 10)
         this.acc = this.pos.copy().mult(random(0.01000, 0.02002))
         this.w = random(Math.random() * 20, Math.random() * 20)
-        } 
+        } else if (selectedGenre === 'pop' && rndPopInt === 2) {
+        this.pos = p5.Vector.random2D().mult(Math.random() * 10)
+        this.vel = createVector(Math.random() * 0.2000, Math.random() * 2)
+        this.acc = this.pos.copy().mult(random(0.10000, 0.20002))
+        this.w = random(Math.random() * 3, Math.random() * 10)
+        } else if (selectedGenre === 'pop' && rndPopInt === 3) {
+            this.pos = p5.Vector.random2D().mult(Math.random() * 10)
+            this.vel = createVector(Math.random() * 0.9000, Math.random() * 7)
+            this.acc = this.pos.copy().mult(random(0.00400, 0.90002))
+            this.w = random(Math.random() * 6, Math.random() * 2)
+        } else if (selectedGenre === 'pop' && rndPopInt === 4) {
+            this.pos = p5.Vector.random2D().mult(Math.random() * 90)
+            this.vel = createVector(Math.random() * 0.2000, Math.random() * 4)
+            this.acc = this.pos.copy().mult(random(0.05400, 0.98002))
+            this.w = random(Math.random() * 4, Math.random() * 9)
+        } else if (selectedGenre === 'pop' && rndPopInt === 5) {
+            this.pos = p5.Vector.random2D().mult(Math.random() * 4)
+            this.vel = createVector(Math.random() * 1.2000, Math.random() * 40)
+            this.acc = this.pos.copy().mult(random(1.05400, 3.98002))
+            this.w = random(Math.random() * 2, Math.random() * 3)
+        }
     }
 
     //---------------------------pushes the particles away when the volume reaches a certain level
@@ -166,16 +186,16 @@ function randomIntFromInterval(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-const rndInt = randomIntFromInterval(1, 6)
+const rndPopInt = randomIntFromInterval(1, 6)
 
 
 
 
-
+//The following switch function was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
 function randomPopShape() {
     let wave = fft.waveform()  
 
-    switch (rndInt) {
+    switch (rndPopInt) {
         case 1: 
         if (amp > 200) {
             beginShape();
