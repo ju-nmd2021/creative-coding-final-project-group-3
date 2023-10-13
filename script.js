@@ -2,240 +2,67 @@ let song;
 let fft;
 let particles = []
 let state = 0; 
-let fadeAmount = -1;
 let button = document.getElementById('generateBtn')
 let homeContent = document.getElementById('home-content')
 
-//establish the ranges of colors for each genre 
-const popColorRange = [
-  [0, 0, 255]
-  [128, 0, 128], 
-  [0, 255, 255],  
-  [255, 105, 180],
-  [255, 255, 255], 
-  [0, 255, 127],
-  [230, 230, 250],
-  [0, 128, 128],
-  [255, 0, 255],
-]
+// let randomRockInt = Math.floor(Math.random() * (20 - 11 + 1)) + 11;
 
-const rockColorRange = [
-    [255, 0, 0],   // Red
-    [0, 0, 0],     // Black
-    [255, 165, 0], // Orange
-    [210, 54, 0],  // Dark Orange
-    [255, 255, 0], // Yellow
-  ]
+//REFERENCE: The following three strings of code were adapted from https://www.youtube.com/watch?v=1ut44--PSSo Accessed: 2023-10-12
+function setup() {
+    let currentDate = new Date();
+    currentTimestamp = Math.floor(currentDate.getTime() / 1000);
+}
 
+//REFERENCE: The following 12 strings of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
+let popHexString = "0123defg";
+let rockHexString = "345abcde";
 
-//stores random values into genre color variables based on the established range of colors 
-const popColor1 = popColorRange[Math.floor(Math.random() * 7)];
-const popColor2 = popColorRange[Math.floor(Math.random() * 7)];
+let randomColor = () => {
+    let selectedGenre = document.getElementById('genre-select').value;
+    if (selectedGenre==='pop')
+    {
+    let hexCode = "#";
+    for( i=0; i<6; i++){
+        hexCode += popHexString[Math.floor(Math.random() * popHexString.length)];
+    }
+    return hexCode;
+    } else {
+        let hexCode = "#";
+    for( i=0; i<6; i++){
+        hexCode += rockHexString[Math.floor(Math.random() * rockHexString.length)];
+    }
+    return hexCode;
+    }
+}
 
-const rockColor1 = rockColorRange[Math.floor(Math.random() * 4)];
-const rockColor2 = rockColorRange[Math.floor(Math.random() * 4)];
+let colorOne = randomColor();
+let colorTwo = randomColor();
+let colorThree = randomColor();
 
-
+let generateGrad = () => {
+    let angle = Math.floor(Math.random() * 360);
+    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo})`;
+}
 
 //load audio source based on the genre
 function preload() {
     song = loadSound('DuaLipa.mp3')
    };
 
-//Function that generates waveform artwork 
-function generateArt() {
-    let selectedGenre = document.getElementById('genre-select').value;
-    let gradientStyle = ""
-   
-    fft.analyze()
-    amp = fft.getEnergy(20, 200)
-
-    //---------------------------Creates empty object for the color range 
-    let genreColorRange = {};
-
-    //---------------------------Conditions for what range should be displayed for which genre 
-    if (selectedGenre === 'pop') {
-        genreColorRange = {
-            color1: popColor1,
-            color2: popColor2,
-        };
-    } else if (selectedGenre === 'rock') {
-        genreColorRange = {
-            color1: rockColor1,
-            color2: rockColor2,
-        }
-    }
-
-    //---------------------------Inserts gradient based on the selected color range 
-    gradientStyle = `linear-gradient(to bottom, rgba(${genreColorRange.color1[2]}, ${genreColorRange.color1[1]}, ${genreColorRange.color1[2]}, 1), rgba(${genreColorRange.color2[1]}, ${genreColorRange.color2[2]}, ${genreColorRange.color2[0]}, 1)`
-    
-
-    //---------------------------Defines the attributes and waveform for the 'POP' genre 
-    if (selectedGenre === 'pop') {
-        let fade = 255;
-        stroke(popColor2, fade)
-        document.body.style.background = gradientStyle;
-        frameRate(15)
-        // translate(width / 2, height / 2)
-        strokeWeight(10)
-        fill(popColor2);
-
-    //---------------------------Pop Waveform 
-    let wave = fft.waveform()
-    
-    if (amp > 200) {
-     beginShape()
-     for (let i = 0; i < width; i++) {
-        let index = floor(map(i, 20, width, 30, wave.length))
-        let x = i
-        let y = wave[index] * 170 + height / 2
-        vertex(x, y)
-     }
-     endShape()
-     frameRate(10)
-    } else {
-        
-        beginShape()
-        for (let i = 2; i < width; i++) {
-           let index = floor(map(i, 50, width, 300, wave.length))
-           let x = i
-           let y = wave[index] * 30 + height / 2
-           vertex(x, y)
-        }
-        endShape()
-    }
-    
-    //---------------------------Generates the particles that move away from the waveform 
-    let p = new Particle();
-    particles.push(p)
-
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].update(amp > 230)
-        particles[i].show()
-    }
-
-    stroke(popColor2);
-    strokeWeight(100)
-  
-     //---------------------------Defines the attributes and waveform for the 'ROCK' genre 
-
-    } else if (selectedGenre === 'rock') {
-        document.body.style.background = gradientStyle;
-        if (amp > 200) {
-        stroke(rockColor1);
-        frameRate(10)
-        translate(width / 2, height / 2)
-        strokeWeight(Math.random() * 5)
-        noFill()
-
-    //---------------------------defines the shape being drawn 
-    let wave = fft.waveform()
-    
-     for (var t = -1; t <= 1; t += 2) {
-        beginShape()
-        for (let i = 0; i <= 180; i += 0.1) {
-            let index = floor(map(i, 0, 180, 0, wave.length - 1))
-            let r = map(wave[index], -1, 1, 150, 350)
-            let x = r * sin(i) * t
-            let y = r * cos(i)
-            vertex(x, y)
-        } 
-        endShape()
-    }
-
-    } else {
-        stroke(rockColor1);
-        frameRate(10)
-        translate(width / 2, height / 2)
-        strokeWeight(50)
-        fill(rockColor2)
-
-    //---------------------------defines the shape being drawn 
-    let wave = fft.waveform()
-    
-     for (var t = -1; t <= 1; t += 2) {
-        beginShape()
-        for (let i = 0; i <= 180; i += 0.1) {
-            let index = floor(map(i, 0, 180, 0, wave.length - 1))
-            let r = map(wave[index], -1, 1, 15, 20)
-            let x = r * sin(i) * t
-            let y = r * cos(i)
-            vertex(x, y)
-        } 
-        endShape()
-    }
-    }
-    
-    //---------------------------Generates the particles that move away from the waveform 
-    let p = new Particle();
-    particles.push(p)
-
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].update(amp > 230)
-        particles[i].show()
-    }
-
-    stroke(200, 100, 50);
-    strokeWeight(100)
-    // } else if (selectedGenre === 'jazz') {
-    //     background(10, 10, 200)
-    // } else if (selectedGenre === 'hiphop') {
-    //     background(4, 150, 43)
-    // } else if (selectedGenre === 'alternative') {
-    //     background(1, 200, 100)
-    } else
-
-    background(0);
-    stroke(255);
-    strokeWeight(0.5)
-    noFill();
-    
-  
 
 
-
-    //---------------------------defines the shape being drawn 
-    // let wave = fft.waveform()
-    
-    // for (var t = -1; t <= 1; t += 2) {
-    //     beginShape()
-    //     for (let i = 0; i <= 180; i += 0.1) {
-    //         let index = floor(map(i, 0, 180, 0, wave.length - 1))
-    //         let r = map(wave[index], -1, 1, 150, 350)
-    //         let x = r * sin(i) * t
-    //         let y = r * cos(i)
-    //         vertex(x, y)
-    //     } 
-    //     endShape()
-    // }
-    
-    //---------------------------Generates the particles that move away from the waveform 
-    // let p = new Particle();
-    // particles.push(p)
-
-    // for (let i = 0; i < particles.length; i++) {
-    //     particles[i].update(amp > 230)
-    //     particles[i].show()
-    // }
+//REFERENCE: The waveform and particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
 
 
-};
-
-//Randomly generated particles based on the genre selection 
-class Particle {
+class popParticle {
     constructor() {
         let selectedGenre = document.getElementById('genre-select').value;
         if (selectedGenre === 'pop') {
-        this.pos = p5.Vector.random2D().mult(400)
-        this.vel = createVector(Math.random() * 500, Math.random() * 3)
-        this.acc = this.pos.copy().mult(random(0.0050, 0.00015))
-        this.w = random(12, 7)
-        } else if (selectedGenre === 'rock') {
-            this.pos = p5.Vector.random2D().mult(Math.random() * 800)
-            this.vel = createVector(Math.random() * 10, Math.random() * 10)
-            this.acc = this.pos.copy().mult(random(0.0030, 0.00012))
-            this.w = random(5, 10)
-        }
+        this.pos = p5.Vector.random2D().mult(Math.random() * 5)
+        this.vel = createVector(Math.random() * 0.5000, Math.random() * 10)
+        this.acc = this.pos.copy().mult(random(0.01000, 0.02002))
+        this.w = random(Math.random() * 20, Math.random() * 20)
+        } 
     }
 
     //---------------------------pushes the particles away when the volume reaches a certain level
@@ -253,20 +80,534 @@ class Particle {
     show() {
         let selectedGenre = document.getElementById('genre-select').value;
         if (selectedGenre === 'pop') {
-            stroke(popColor2)
+            stroke(colorOne)
             strokeWeight(Math.random() * 10)
-            fill(popColor1)
+            fill(colorTwo)
             ellipse(this.pos.x, this.pos.y, Math.random() * 1)
-        } else if (selectedGenre === 'rock') {
-            stroke(rockColor2)
-            strokeWeight(Math.random() * 0.5)
-            fill(rockColor2)
-            line(this.pos.x, this.pos.y, Math.random() * 10, 10)
+        } 
+    }
+}
+
+class rockParticle {
+    constructor() {
+        let selectedGenre = document.getElementById('genre-select').value;
+     if (selectedGenre === 'rock') {
+            this.pos = p5.Vector.random2D(Math.random() * 1).mult(Math.random() * 12)
+            this.vel = createVector(Math.random() * 3, Math.random() * 20)
+            this.acc = this.pos.copy().mult(random(0.1000, 0.1000))
+            this.w = random(5, 10, 100, 20, 9)
+        }
+    }
+
+    //---------------------------pushes the particles away when the volume reaches a certain level
+    update(cond) {
+        this.vel.add(this.acc)
+        this.pos.add(this.vel)
+        if (cond) {
+            this.pos.add(this.vel)
+            this.pos.add(this.vel)
+            this.pos.add(this.vel)
+        }
+    }
+   
+    //---------------------------Shows the particles on the canvas 
+    show() {
+        let selectedGenre = document.getElementById('genre-select').value;
+      if (selectedGenre === 'rock') {
+            stroke(colorTwo)
+            strokeWeight(Math.random() * 1)
+            fill(colorOne)
+            line(this.pos.x, this.pos.y, Math.random() * 100, 1, 10, 5)
         }
     }
 }
 
+function generateArt() {
+
+    let selectedGenre = document.getElementById('genre-select').value;
+   
+    fft.analyze()
+    amp = fft.getEnergy(20, 200)
+
+    if (selectedGenre==='pop') {
+
+        randomPopShape();
+       
+        if (amp >= 210) {
+
+       
+        let p = new popParticle();
+        particles.push(p)
+    
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update(amp > 230)
+            particles[i].show()
+        }
+      }
+    } else if (selectedGenre==='rock') {
+
+        randomRockShape();
+        
+        if (amp >= 220) {
+        let p = new rockParticle();
+        particles.push(p)
+    
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update(amp > 230)
+            particles[i].show()
+        }
+        }
+    } 
+}
+
+
+//The following 4 lines were adapted from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+const rndInt = randomIntFromInterval(1, 6)
+
+
+
+
+
+function randomPopShape() {
+    let wave = fft.waveform()  
+
+    switch (rndInt) {
+        case 1: 
+        if (amp > 200) {
+            beginShape();
+                stroke(colorThree)
+                strokeWeight(10)
+                fill(colorTwo)
+                for (let i = 0; i < width; i++) {
+                let index = floor(map(i, 0, width, 100, wave.length + 10));
+                let x = i;
+                let y = wave[index] * Math.random() * 100 + height / 2 + sin(i) / 1; // Adjust the waveform with a sine function
+                vertex(x, y);
+            }
+            endShape();
+            } else if (amp < 200) {
+            beginShape();
+                stroke(colorThree)
+                    for (let i = 0; i < width; i++) {
+                    let index = floor(map(i, 0, width, 7, wave.length + 20));
+                    let x = i;
+                    let y = wave[index] * 50 + height / 2 + sin(i) / 1; // Adjust the waveform with a sine function
+                    vertex(x, y);
+                    }
+            }
+            endShape();
+           
+        break;
+        case 2:   
+        if (amp > 200) {
+            beginShape();
+                stroke(colorThree)
+                for (let i = 0; i < width; i++) {
+                let index = floor(map(i, 0, 2000, 10, wave.length + 10));
+                let x = i;
+                let y = wave[index] * 250 + height / 2 + sin(i) / 1; // Adjust the waveform with a sine function
+                vertex(x, y);
+            }
+            endShape();
+            } else if (amp < 200) {
+            beginShape();
+                stroke(colorThree)
+                    for (let i = 0; i < width; i++) {
+                    let index = floor(map(i, 0, width, 7, wave.length + 20));
+                    let x = i;
+                    let y = wave[index] * 100 + height / 2 + sin(i) / 1; // Adjust the waveform with a sine function
+                    vertex(x, y);
+                    }
+            }
+            endShape();
+        break;
+        case 3: 
+        if (amp > 200) {
+            beginShape();
+                stroke(colorThree)
+                for (let i = 0; i < width; i++) {
+                let index = floor(map(i, 10, width, 0, wave.length + 2));
+                let x = i;
+                let y = wave[index] * 190 + height / 1 + sin(i) / 10; // Adjust the waveform with a sine function
+                vertex(x, y);
+            }
+            endShape();
+            beginShape();
+            stroke(colorTwo)
+            for (let i = 0; i < width; i++) {
+            let index = floor(map(i, 10, width, 0, wave.length + 2));
+            let x = i;
+            let y = wave[index] * 100 + height / 2 + sin(i) / 9; // Adjust the waveform with a sine function
+            vertex(x, y);
+            }
+            endShape();
+
+        beginShape();
+            stroke(colorOne)
+            for (let i = 0; i < width; i++) {
+            let index = floor(map(i, 10, width, 0, wave.length + 2));
+            let x = i;
+            let y = wave[index] * 50 + height + sin(i) / 7; // Adjust the waveform with a sine function
+            vertex(x, y);
+        }
+        endShape();
+            } else if (amp < 200) {
+            beginShape();
+                stroke(colorThree)
+                    for (let i = 0; i < width; i++) {
+                    let index = floor(map(i, 0, width, 2, wave.length + 2));
+                    let x = i;
+                    let y = wave[index] * 10 + height / 2 + sin(i) / 20; // Adjust the waveform with a sine function
+                    vertex(x, y);
+                    }
+            }
+            endShape();
+    
+        break;
+        case 4: 
+        if (amp > 200) {
+            beginShape();
+                stroke(colorThree)
+                for (let i = 0; i < width; i++) {
+                let index = floor(map(i, 0, width, 10, wave.length + 10));
+                let x = i;
+                let y = wave[index] * 400 + height / 2 + sin(i) / 2; // Adjust the waveform with a sine function
+                vertex(x, y);
+            }
+            endShape();
+
+            beginShape();
+            stroke(colorThree)
+            for (let i = 0; i < width; i++) {
+            let index = floor(map(i, 0, width, 10, wave.length + 10));
+            let x = i;
+            let y = wave[index] * 50 + height / 2 + sin(i) / 2; // Adjust the waveform with a sine function
+            vertex(x, y);
+        }
+        endShape();
+            } else if (amp < 200) {
+            beginShape();
+                stroke(colorThree)
+                    for (let i = 0; i < width; i++) {
+                    let index = floor(map(i, 0, width, 7, wave.length + 20));
+                    let x = i;
+                    let y = wave[index] * 100 + height / 2 + sin(i) / 1; // Adjust the waveform with a sine function
+                    vertex(x, y);
+                    }
+            }
+            endShape();
+        
+        break;
+        case 5: 
+        if (amp > 200) {
+            beginShape();
+                stroke(colorThree)
+                for (let i = 0; i < width; i++) {
+                let index = floor(map(i, 3, width, 3, wave.length + 10));
+                let x = i;
+                let y = wave[index] * 50 + height / 3 + sin(i) / 1; // Adjust the waveform with a sine function
+                vertex(x, y);
+            }
+            endShape();
+
+            beginShape();
+            stroke(colorTwo)
+            for (let i = 0; i < width; i++) {
+            let index = floor(map(i, 2, width, 1, wave.length + 10));
+            let x = i;
+            let y = wave[index] * 80 + height / 10 + sin(i) / 1; // Adjust the waveform with a sine function
+            vertex(x, y);
+        }
+        endShape();
+
+        beginShape();
+        stroke(colorOne)
+        for (let i = 0; i < width; i++) {
+        let index = floor(map(i, 10, width, 5, wave.length + 10));
+        let x = i;
+        let y = wave[index] * 90 + height / 5 + sin(i) / 2; // Adjust the waveform with a sine function
+        vertex(x, y);
+    }
+    endShape();
+
+    beginShape();
+    stroke(colorThree)
+    for (let i = 0; i < width; i++) {
+    let index = floor(map(i, 0, width, 2, wave.length + 10));
+    let x = i;
+    let y = wave[index] * 40 + height / 3 + sin(i) / 1; // Adjust the waveform with a sine function
+    vertex(x, y);
+}
+endShape();
+            } else if (amp < 200) {
+            beginShape();
+                stroke(colorThree)
+                    for (let i = 0; i < width; i++) {
+                    let index = floor(map(i, 0, width, 7, wave.length + 20));
+                    let x = i;
+                    let y = wave[index] * 300 + height / 2 + sin(i) / 1; // Adjust the waveform with a sine function
+                    vertex(x, y);
+                    }
+            }
+            endShape();
+            break;
+    }
+}
+
+
+function randomRockShape() {
+    
+    let randomRockInt = 1;
+    
+    // Math.floor(Math.random() * (5 - 1 + 1)) + 1;
+
+    switch (randomRockInt) {
+        case 0: 
+
+        if (amp > 200) {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(Math.random() * 5)
+            noFill()
+            
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 150, 350)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+        } else  {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(50)
+            fill(colorTwo)
+    
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 15, 20)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+    }
+
+        break; 
+        case 1: 
+     if (amp > 200) {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(Math.random() * 5)
+            noFill()
+            
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 150, 350)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+        } else  {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(50)
+            fill(colorTwo)
+    
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 15, 20)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+    }
+        break;
+        case 2: 
+
+        if (amp > 200) {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(Math.random() * 5)
+            noFill()
+            
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 150, 350)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+        } else  {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(50)
+            fill(colorTwo)
+    
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 15, 20)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+    }
+       
+        break;
+        case 3: 
+
+        if (amp > 200) {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(Math.random() * 5)
+            noFill()
+            
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 150, 350)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+        } else  {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(50)
+            fill(colorTwo)
+    
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 15, 20)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+    }
+       
+        break;
+        case 4: 
+
+        if (amp > 200) {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(Math.random() * 5)
+            noFill()
+            
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 150, 350)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+        } else  {
+            stroke(colorOne);
+            frameRate(10)
+            translate(width / 2, height / 2)
+            strokeWeight(50)
+            fill(colorTwo)
+    
+        //---------------------------defines the shape being drawn 
+        let wave = fft.waveform()
+        
+         for (var t = -1; t <= 1; t += 2) {
+            beginShape()
+            for (let i = 0; i <= 180; i += 0.1) {
+                let index = floor(map(i, 0, 180, 0, wave.length - 1))
+                let r = map(wave[index], -1, 1, 15, 20)
+                let x = r * sin(i) * t
+                let y = r * cos(i)
+                vertex(x, y)
+            } 
+            endShape()
+        }
+    }
+    break;
+     }
+ 
+    }
+ 
+
+
+
 //Generate Button triggers artwork 
+
+
 button.addEventListener('click', function(){
     if (state===0) {
     state = 1;
@@ -277,13 +618,16 @@ button.addEventListener('click', function(){
 }) 
 
 
+
 //Artwork is drawn onto canvas in the correct state 
 function draw() {
 if (state===1) {
     homeContent.style.display = "none"
     angleMode(DEGREES)
     imageMode(CENTER)
-    generateArt();
+    generateGrad();
+    generateArt(currentTimestamp);
+
 
     } else if (state===0)
     homeContent.style.display = "flex";
@@ -292,9 +636,3 @@ if (state===1) {
 
 
 
-
-
-
-
-
-// Reference: Colorful Coding - Code an Audio Visualizer in p5 | Coding Project 17 - Youtube 2021//
