@@ -4,18 +4,17 @@ let particles = []
 let state = 0; 
 let button = document.getElementById('generateBtn')
 let homeContent = document.getElementById('home-content')
-
-// let randomRockInt = Math.floor(Math.random() * (20 - 11 + 1)) + 11;
-
-//REFERENCE: The following three strings of code were adapted from https://www.youtube.com/watch?v=1ut44--PSSo Accessed: 2023-10-12
-function setup() {
-    let currentDate = new Date();
-    currentTimestamp = Math.floor(currentDate.getTime() / 1000);
-}
-
-//REFERENCE: The following 12 strings of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
 let popHexString = "0123defg";
 let rockHexString = "345abcde";
+let rndPopInt = randomIntFromInterval(1, 6)
+let particleInt = randomIntFromInterval(0.01000, 300)
+let currentTimestamp = new Date().getTime();
+
+
+//REFERENCE: The following three strings of code were adapted from https://www.youtube.com/watch?v=1ut44--PSSo Accessed: 2023-10-12
+
+
+//REFERENCE: The following 12 strings of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
 
 let randomColor = () => {
     let selectedGenre = document.getElementById('genre-select').value;
@@ -40,46 +39,48 @@ let colorTwo = randomColor();
 let colorThree = randomColor();
 
 let generateGrad = () => {
-    let angle = Math.floor(Math.random() * 360);
+    let angle = randomIntFromInterval(1, 360)
     document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo})`;
+    reset()
 }
 
 //load audio source based on the genre
 function preload() {
-    song = loadSound('DuaLipa.mp3')
+    let popSong1 = loadSound('DuaLipa.mp3')
+    let rockSong1 = loadSound('ACDC.mp3')
    };
 
 
 
 //REFERENCE: The waveform and particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
 
-
 class popParticle {
     constructor() {
+        let particleInt = randomIntFromInterval(300, 3000)
         let selectedGenre = document.getElementById('genre-select').value;
         if (selectedGenre === 'pop' && rndPopInt === 1) {
-        this.pos = p5.Vector.random2D().mult(Math.random() * 5)
-        this.vel = createVector(Math.random() * 0.5000, Math.random() * 10)
-        this.acc = this.pos.copy().mult(random(0.01000, 0.02002))
-        this.w = random(Math.random() * 20, Math.random() * 20)
+            this.pos = p5.Vector.random2D().mult(particleInt)
+            this.vel = createVector(Math.random() * 0.5000, Math.random() * 10)
+            this.acc = this.pos.copy().mult(random(0.01000, 0.02002))
+            this.w = random(Math.random() * 5, Math.random() * 5)
         } else if (selectedGenre === 'pop' && rndPopInt === 2) {
-        this.pos = p5.Vector.random2D().mult(Math.random() * 10)
-        this.vel = createVector(Math.random() * 0.2000, Math.random() * 2)
-        this.acc = this.pos.copy().mult(random(0.10000, 0.20002))
-        this.w = random(Math.random() * 3, Math.random() * 10)
+            this.pos = p5.Vector.random2D().mult(particleInt)
+            this.vel = createVector(Math.random() * 0.2000, Math.random() * 2)
+            this.acc = this.pos.copy().mult(random(0.10000, 0.20002))
+            this.w = random(Math.random() * 3, Math.random() * 10)
         } else if (selectedGenre === 'pop' && rndPopInt === 3) {
-            this.pos = p5.Vector.random2D().mult(Math.random() * 10)
-            this.vel = createVector(Math.random() * 0.9000, Math.random() * 7)
+            this.pos = p5.Vector.random2D().mult(particleInt)
+            this.vel = createVector(Math.random() * 0.9000, Math.random() * 3000)
             this.acc = this.pos.copy().mult(random(0.00400, 0.90002))
             this.w = random(Math.random() * 6, Math.random() * 2)
         } else if (selectedGenre === 'pop' && rndPopInt === 4) {
-            this.pos = p5.Vector.random2D().mult(Math.random() * 90)
-            this.vel = createVector(Math.random() * 0.2000, Math.random() * 4)
+            this.pos = p5.Vector.random2D().mult(particleInt)
+            this.vel = createVector(Math.random() * 0.2000, Math.random() * 700)
             this.acc = this.pos.copy().mult(random(0.05400, 0.98002))
             this.w = random(Math.random() * 4, Math.random() * 9)
         } else if (selectedGenre === 'pop' && rndPopInt === 5) {
-            this.pos = p5.Vector.random2D().mult(Math.random() * 4)
-            this.vel = createVector(Math.random() * 1.2000, Math.random() * 40)
+            this.pos = p5.Vector.random2D().mult(particleInt)
+            this.vel = createVector(Math.random() * 1.2000, Math.random() * 1)
             this.acc = this.pos.copy().mult(random(1.05400, 3.98002))
             this.w = random(Math.random() * 2, Math.random() * 3)
         }
@@ -103,7 +104,7 @@ class popParticle {
             stroke(colorOne)
             strokeWeight(Math.random() * 10)
             fill(colorTwo)
-            ellipse(this.pos.x, this.pos.y, Math.random() * 1)
+            ellipse(this.pos.x, this.pos.y, Math.random() * particleInt)
         } 
     }
 }
@@ -154,8 +155,6 @@ function generateArt() {
         randomPopShape();
        
         if (amp >= 210) {
-
-       
         let p = new popParticle();
         particles.push(p)
     
@@ -182,16 +181,15 @@ function generateArt() {
 
 
 //The following 4 lines were adapted from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
-function randomIntFromInterval(min, max) { // min and max included 
+function randomIntFromInterval(min, max) { 
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-const rndPopInt = randomIntFromInterval(1, 6)
 
 
 
 
-//The following switch function was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
+//Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
 function randomPopShape() {
     let wave = fft.waveform()  
 
@@ -629,11 +627,17 @@ function randomRockShape() {
 
 
 button.addEventListener('click', function(){
+    let selectedGenre = document.getElementById('genre-select').value;
     if (state===0) {
     state = 1;
     createCanvas(innerWidth, innerHeight);
     fft = new p5.FFT()
-    song.play();
+    if (selectedGenre === 'pop') {
+    popSong1.play();
+    } else if (selectedGenre === 'rock') {
+    rockSong1.play();
+    }
+    generateGrad();
     }
 }) 
 
@@ -645,7 +649,6 @@ if (state===1) {
     homeContent.style.display = "none"
     angleMode(DEGREES)
     imageMode(CENTER)
-    generateGrad();
     generateArt(currentTimestamp);
 
 
