@@ -58,6 +58,7 @@ function preload() {
 
 
 
+
 //REFERENCE: The waveform and particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
 
 class popParticle {
@@ -152,7 +153,7 @@ class rockParticle {
 function generateArt() {
 
     let selectedGenre = document.getElementById('genre-select').value;
-   
+
     fft.analyze()
     amp = fft.getEnergy(20, 200)
 
@@ -183,8 +184,8 @@ function generateArt() {
         }
         }
     } 
+    
 }
-
 
 
 
@@ -603,31 +604,40 @@ function randomRockShape() {
     }
  
 
-
+function artworkButtons() {
+        rect(50, 720, 150, 50)
+        fill(255, 255, 255)
+    }
+    
 
 //Generate Button triggers artwork 
-
-
 button.addEventListener('click', function(){
     let selectedGenre = document.getElementById('genre-select').value;
-    if (state===0) {
+    generateGrad();
+
+    if (state === 0 && selectedGenre === 'pop') {
+    popSong1.play();
     state = 1;
     createCanvas(innerWidth, innerHeight);
     fft = new p5.FFT()
-    if (selectedGenre === 'pop') {
-    popSong1.play();
-    } else  {
+    } else if (state === 0 && selectedGenre ==='rock') {
     rockSong1.play();
-    }
-    generateGrad();
-    }
+    state = 1;
+    createCanvas(innerWidth, innerHeight);
+    fft = new p5.FFT()
+    } else
+    alert('ERROR: Please select a genre')
 }) 
 
-
+if (state===0) {
+    let angle = randomIntFromInterval(1, 360)
+    document.body.style.background = `linear-gradient(${angle}deg, black, grey)`;
+}
 
 //Artwork is drawn onto canvas in the correct state 
 function draw() {
 if (state===1) {
+    artworkButtons()
     homeContent.style.display = "none"
     angleMode(DEGREES)
     imageMode(CENTER)
