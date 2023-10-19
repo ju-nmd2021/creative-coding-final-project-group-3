@@ -1,5 +1,13 @@
 let popSong1;
+let popSong2;
+let popSong3;
+let popSong4;
+let popSong5;
 let rockSong1;
+let rockSong2;
+let rockSong3;
+let rockSong4; 
+let rockSong5;
 let fft;
 let particles = [];
 let state = 0; 
@@ -11,9 +19,26 @@ let homeContent = document.getElementById('home-content');
 let hexString = "0123456789abcdef";
 let rndSongInt; 
 let particleInt;  
-let waveInt; 
+let waveInt;
+let backButtonX = 30;
+let backButtonY = 880;
 
 
+//load audio source based on the genre
+function preload() {
+    popSong1 = loadSound('/Audio Files/DuaLipa.mp3');
+    popSong2 = loadSound('/Audio Files/Flowers.mp3');
+    popSong3 = loadSound('/Audio Files/Daylight.mp3');
+    popSong4 = loadSound('/Audio Files/Lights.mp3');
+    popSong5 = loadSound('/Audio Files/Sunflower.mp3');
+    rockSong1 = loadSound('/Audio Files/ACDC.mp3');
+    rockSong2 = loadSound('/Audio Files/Mississippi.mp3');
+    rockSong3 = loadSound('/Audio Files/Bohemian.mp3');
+    rockSong4 = loadSound('/Audio Files/RocknRoll.mp3');
+    rockSong5 = loadSound('/Audio Files/TeenSpirit.mp3');
+   };
+
+//REFERENCE: The following 4 lines were adapted from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
 function randomIntegers() {
     rndSongInt = randomIntFromInterval(1, 6);
     particleInt = randomIntFromInterval(0.01000, 300);
@@ -24,32 +49,19 @@ function setup() {
     randomIntegers();
 }
 
-//load audio source based on the genre
-function preload() {
-    popSong1 = loadSound('DuaLipa.mp3');
-    rockSong1 = loadSound('ACDC.mp3');
-   }
-
-
-//The following 4 lines were adapted from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
 function randomIntFromInterval(min, max) { 
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 
-//REFERENCE: The following three strings of code were adapted from https://www.youtube.com/watch?v=1ut44--PSSo Accessed: 2023-10-12
-
-
 //REFERENCE: The following 12 strings of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
-
-
 let randomColor = () => {
     let hexCode = "#";
     for( i=0; i<6; i++){
         hexCode += hexString[Math.floor(Math.random() * hexString.length)];
     }
     return hexCode;
-};
+}
 
 let randomGradient = () => {
     colorOne = randomColor();
@@ -57,10 +69,66 @@ let randomGradient = () => {
     colorThree = randomColor();
     let angle = Math.floor(Math.random() * 360);
     document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
-};
+}
 
-//REFERENCE: The waveform and particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
 
+
+function songPicker() {
+    let selectedGenre = document.getElementById('genre-select').value;
+
+    switch (rndSongInt) {
+        case 1:
+        if (selectedGenre==='pop') {
+            popSong1.play();
+        } else if (selectedGenre==='rock') {
+            rockSong1.play();
+        }
+        break;
+        case 2:
+        if (selectedGenre==='pop') {
+            popSong2.play();
+        } else if (selectedGenre==='rock') {
+            rockSong2.play();
+        }
+        break;
+        case 3:
+        if (selectedGenre==='pop') {
+            popSong3.play();
+        } else if (selectedGenre==='rock') {
+            rockSong3.play();
+        }
+        break;
+        case 4:
+        if (selectedGenre==='pop') {
+            popSong4.play();
+        } else if (selectedGenre==='rock') {
+            rockSong4.play();
+        }
+        break;
+        case 5:
+        if (selectedGenre==='pop') {
+            popSong5.play();
+        } else if (selectedGenre==='rock') {
+            rockSong5.play();
+        }
+        break;
+        }
+}
+
+function songStopper() {
+    popSong1.stop();
+    rockSong1.stop();
+    popSong2.stop();
+    rockSong2.stop();
+    popSong3.stop();
+    rockSong3.stop();
+    popSong4.stop();
+    rockSong4.stop();
+    popSong5.stop();
+    rockSong5.stop();
+}
+
+//REFERENCE: The particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
 class popParticle {
     constructor() {
         let particleInt = randomIntFromInterval(300, 3000);
@@ -159,7 +227,7 @@ class rockParticle {
 }
 
 
-//Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
+//REFERENCE: Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
 function randomPopShape() {
    let wave = fft.waveform();
 
@@ -345,7 +413,6 @@ endShape();
     break;
     }
 }
-
 
 function randomRockShape() {
     let wave = fft.waveform();
@@ -568,8 +635,37 @@ function randomRockShape() {
  
     }
  
-   
     
+
+//Generate Button triggers artwork 
+button.addEventListener('click', function() {
+    let selectedGenre = document.getElementById('genre-select').value;
+    setup();
+
+    homeContent.style.display = "none";
+
+    if (selectedGenre === 'pop') {
+    state = 1;
+    songPicker();
+    createCanvas(innerWidth, innerHeight);
+    randomGradient();
+    artworkButtons();
+    fft = new p5.FFT();
+    } else if (selectedGenre ==='rock') {
+    state = 1;
+    songPicker();
+    createCanvas(innerWidth, innerHeight);
+    randomGradient();
+    artworkButtons();
+    fft = new p5.FFT();
+    } else {
+        alert('ERROR: Please select a genre');
+    }
+});
+
+
+
+//REFERENCE: The waveform generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
 function generateArt() {
 
         let selectedGenre = document.getElementById('genre-select').value;
@@ -607,51 +703,12 @@ function generateArt() {
     }
 
 
-function artworkButtons() {
-        fill(255, 255, 255);
-        rect(30, 760, 140, 40);
-        noStroke();
-    
-        fill(colorOne);
-        text('BACK', 79, 786);
-        textSize(17);
-        textStyle('bold');
-    }
-    
-//Generate Button triggers artwork 
-button.addEventListener('click', function() {
-    let selectedGenre = document.getElementById('genre-select').value;
-    setup();
-
-    homeContent.style.display = "none";
-
-    if (selectedGenre === 'pop') {
-    state = 1;
-    popSong1.play();
-    createCanvas(innerWidth, innerHeight);
-    randomGradient();
-    artworkButtons();
-    fft = new p5.FFT();
-    } else if (selectedGenre ==='rock') {
-    state = 1;
-    rockSong1.play();
-    createCanvas(innerWidth, innerHeight);
-    randomGradient();
-    artworkButtons();
-    fft = new p5.FFT();
-    } else {
-        alert('ERROR: Please select a genre');
-    }
-});
-
-
 function mouseClicked() {
     if (state === 1) {
-        if (mouseX > 30 && mouseX < 60 && mouseY > 760 && mouseY < 800) {
+        if (mouseX > backButtonX && mouseX < backButtonX + 150 && mouseY > backButtonY && mouseY < backButtonY + 40) {
             state = 0; 
             canvas.remove();
-            popSong1.stop();
-            rockSong1.stop();
+            songStopper();
         }
 
     } 
@@ -670,6 +727,19 @@ if (state===1) {
     let greyAngle = 210;
     document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
+}
+
+function artworkButtons() {
+    push();
+    fill(255, 255, 255);
+    rect(backButtonX, backButtonY, 140, 40);
+    stroke(255, 255, 255, 70)
+
+    fill(128, 128, 128);
+    textStyle(BOLD);
+    textSize(13);
+    text('BACK', backButtonX + 49, backButtonY + 26);
+    pop();
 }
 
 
