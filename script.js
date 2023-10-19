@@ -3,56 +3,26 @@ let rockSong1;
 let fft;
 let particles = [];
 let state = 0; 
+let colorOne;
+let colorTwo;
+let colorThree;
 let button = document.getElementById('generateBtn');
 let homeContent = document.getElementById('home-content');
-let popHexString = "0123defg";
-let rockHexString = "345abcde";
-let rndSongInt = randomIntFromInterval(1, 6);
-let particleInt = randomIntFromInterval(0.01000, 300);
-let waveInt = randomIntFromInterval(300, 1000);
-let currentTimestamp = new Date().getTime();
+let hexString = "0123456789abcdef";
+let rndSongInt; 
+let particleInt;  
+let waveInt; 
 
-//The following 4 lines were adapted from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
-function randomIntFromInterval(min, max) { 
-    return Math.floor(Math.random() * (max - min + 1) + min);
+
+function randomIntegers() {
+    rndSongInt = randomIntFromInterval(1, 6);
+    particleInt = randomIntFromInterval(0.01000, 300);
+    waveInt = randomIntFromInterval(300, 1000);
+    }
+    
+function setup() {
+    randomIntegers();
 }
-
-//REFERENCE: The following three strings of code were adapted from https://www.youtube.com/watch?v=1ut44--PSSo Accessed: 2023-10-12
-
-
-//REFERENCE: The following 12 strings of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
-
-let randomColor = () => {
-    let selectedGenre = document.getElementById('genre-select').value;
-    if (selectedGenre==='pop')
-    {
-    let hexCode = "#";
-    for( i=0; i<6; i++){
-        hexCode += popHexString[Math.floor(Math.random() * popHexString.length)];
-    }
-    return hexCode;
-    } else {
-        let hexCode = "#";
-    for( i=0; i<6; i++){
-        hexCode += rockHexString[Math.floor(Math.random() * rockHexString.length)];
-    }
-    return hexCode;
-    }
-};
-
-let colorOne = randomColor();
-let colorTwo = randomColor();
-let colorThree = randomColor();
-
-let generateRndGrad = () => {
-    let angle = randomIntFromInterval(1, 360);
-    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo})`;
-};
-
-let generateGreyGrad = () => {
-    let greyAngle = 210;
-    document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
-};
 
 //load audio source based on the genre
 function preload() {
@@ -61,18 +31,33 @@ function preload() {
    }
 
 
-function artworkButtons() {
-    fill(255, 255, 255);
-    rect(30, 760, 140, 40);
-    noStroke();
-
-    fill(colorOne);
-    text('BACK', 79, 786);
-    textSize(17);
-    textStyle('bold');
+//The following 4 lines were adapted from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
+function randomIntFromInterval(min, max) { 
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 
+//REFERENCE: The following three strings of code were adapted from https://www.youtube.com/watch?v=1ut44--PSSo Accessed: 2023-10-12
+
+
+//REFERENCE: The following 12 strings of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
+
+
+let randomColor = () => {
+    let hexCode = "#";
+    for( i=0; i<6; i++){
+        hexCode += hexString[Math.floor(Math.random() * hexString.length)];
+    }
+    return hexCode;
+};
+
+let randomGradient = () => {
+    colorOne = randomColor();
+    colorTwo = randomColor();
+    colorThree = randomColor();
+    let angle = Math.floor(Math.random() * 360);
+    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
+};
 
 //REFERENCE: The waveform and particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
 
@@ -141,12 +126,12 @@ class rockParticle {
         this.pos = p5.Vector.random2D(Math.random() * 1).mult(Math.random() * 12);
         this.vel = createVector(Math.random() * 3, Math.random() * 20);
         this.acc = this.pos.copy().mult(random(0.1000, 0.1000));
-        this.w = random(5, 10, 100, 20, 9);
+        this.w = random(5, 10);
      if (selectedGenre === 'rock') {
             this.pos = p5.Vector.random2D(Math.random() * 1).mult(Math.random() * 12);
             this.vel = createVector(Math.random() * 3, Math.random() * 20);
             this.acc = this.pos.copy().mult(random(0.1000, 0.1000));
-            this.w = random(5, 10, 100, 20, 9);
+            this.w = random(10, 100);
         }
     }
 
@@ -173,48 +158,9 @@ class rockParticle {
     }
 }
 
-function generateArt() {
-
-    let selectedGenre = document.getElementById('genre-select').value;
-
-    fft.analyze();
-    amp = fft.getEnergy(20, 200);
-
-    if (selectedGenre==='pop' && state === 1) {
-
-        randomPopShape();
-       
-        if (amp >= 210) {
-        let p = new popParticle();
-        particles.push(p);
-    
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update(amp > 230);
-            particles[i].show();
-        }
-      }
-    } else if (selectedGenre==='rock' && state === 1) {
-
-        randomRockShape();
-        
-        if (amp >= 220) {
-        let p = new rockParticle();
-        particles.push(p);
-    
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update(amp > 230);
-            particles[i].show();
-        }
-        }
-    } 
-}
-
-
-
 
 //Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
 function randomPopShape() {
-   artworkButtons();
    let wave = fft.waveform();
 
     switch (rndSongInt) {
@@ -396,14 +342,14 @@ endShape();
                     }
             }
             endShape();
-            break;
+    break;
     }
 }
 
 
 function randomRockShape() {
-    artworkButtons();
     let wave = fft.waveform();
+
     switch (rndSongInt) {
         case 1: 
 
@@ -531,8 +477,6 @@ function randomRockShape() {
             endShape();
         }
     }
-       
-       
         break;
         case 4: 
         if (amp > 200) {
@@ -624,35 +568,92 @@ function randomRockShape() {
  
     }
  
+   
     
+function generateArt() {
 
+        let selectedGenre = document.getElementById('genre-select').value;
+    
+        fft.analyze();
+        amp = fft.getEnergy(20, 200);
+    
+        if (selectedGenre==='pop') {
+    
+            randomPopShape();
+           
+            if (amp >= 210) {
+            let p = new popParticle();
+            particles.push(p);
+        
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update(amp > 230);
+                particles[i].show();
+            }
+          }
+        } else if (selectedGenre==='rock') {
+    
+            randomRockShape();
+            
+            if (amp >= 220) {
+            let p = new rockParticle();
+            particles.push(p);
+        
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update(amp > 230);
+                particles[i].show();
+            }
+            }
+        } 
+    }
+
+
+function artworkButtons() {
+        fill(255, 255, 255);
+        rect(30, 760, 140, 40);
+        noStroke();
+    
+        fill(colorOne);
+        text('BACK', 79, 786);
+        textSize(17);
+        textStyle('bold');
+    }
+    
 //Generate Button triggers artwork 
 button.addEventListener('click', function() {
     let selectedGenre = document.getElementById('genre-select').value;
+    setup();
+
     homeContent.style.display = "none";
-    
-    if (state === 0 && selectedGenre === 'pop') {
+
+    if (selectedGenre === 'pop') {
+    state = 1;
     popSong1.play();
-    state = 1;
-    generateRndGrad();
     createCanvas(innerWidth, innerHeight);
+    randomGradient();
+    artworkButtons();
     fft = new p5.FFT();
-    } else if (state === 0 && selectedGenre ==='rock') {
-    rockSong1.play();
+    } else if (selectedGenre ==='rock') {
     state = 1;
-    generateRndGrad();
+    rockSong1.play();
     createCanvas(innerWidth, innerHeight);
+    randomGradient();
+    artworkButtons();
     fft = new p5.FFT();
     } else {
         alert('ERROR: Please select a genre');
     }
 });
 
+
 function mouseClicked() {
     if (state === 1) {
         if (mouseX > 30 && mouseX < 60 && mouseY > 760 && mouseY < 800) {
             state = 0; 
+            canvas.remove();
+            popSong1.stop();
+            rockSong1.stop();
         }
+
     } 
 }
 
@@ -663,16 +664,12 @@ if (state===1) {
     homeContent.style.display = "none";
     angleMode(DEGREES);
     imageMode(CENTER);
-    generateArt(currentTimestamp);
-
+    generateArt();
     } else if (state===0) {
-    canvas.remove();
     homeContent.style.display = "flex";
-    generateGreyGrad();
-    popSong1.stop();
-    rockSong1.stop();
+    let greyAngle = 210;
+    document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
-
 }
 
 
