@@ -27,6 +27,7 @@ let colorOne;
 let colorTwo;
 let colorThree;
 let hexString = "0123456789abcdef";
+let angle;
 
 //----------Button Variables 
 let button = document.getElementById('generateBtn');
@@ -149,7 +150,12 @@ let randomGradient = () => {
     colorOne = randomColor();
     colorTwo = randomColor();
     colorThree = randomColor();
-    let angle = Math.floor(Math.random() * 360);
+    angle = Math.floor(Math.random() * 360);
+    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
+}
+
+let rndSongGradient = () => {
+    angle = Math.floor(Math.random() * 360);
     document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
 }
 
@@ -296,6 +302,11 @@ function randomPopShape() {
     switch (rndSongInt) {
         case 1: 
         //------------------------[SHAPE A]
+
+        if (amp > 245) {
+            rndSongGradient();
+        }
+
         if (amp > 200) {
             beginShape();
                 stroke(colorThree);
@@ -323,7 +334,7 @@ function randomPopShape() {
     
         break;
         case 2: 
-        //------------------------[SHAPE A]  
+        //------------------------[SHAPE A] 
         if (amp > 200) {
             beginShape();
                 stroke(colorThree);
@@ -348,6 +359,9 @@ function randomPopShape() {
             endShape();
         break;
         case 3: 
+        if (amp > 247) {
+            rndSongGradient();
+        }
         //------------------------[SHAPE A.1]
         if (amp > 200) {
             beginShape();
@@ -375,7 +389,7 @@ function randomPopShape() {
             for (let i = 0; i < width; i++) {
             let index = floor(map(i, 10, width, 0, wave.length + 2));
             let x = i;
-            let y = wave[index] * 50 + height + sin(i) / 7; 
+            let y = wave[index] * Math.random() * 50 + height + sin(i) / 7; 
             vertex(x, y);
         }
             endShape();
@@ -386,7 +400,7 @@ function randomPopShape() {
                     for (let i = 0; i < width; i++) {
                     let index = floor(map(i, 0, width, 2, wave.length + 2));
                     let x = i;
-                    let y = wave[index] * 10 + height / 2 + sin(i) / 20; 
+                    let y = wave[index] * Math.random() * 10 + height / 2 + sin(i) / 20; 
                     vertex(x, y);
                     }
             }
@@ -422,14 +436,16 @@ function randomPopShape() {
                     for (let i = 0; i < width; i++) {
                     let index = floor(map(i, 0, width, 7, wave.length + 20));
                     let x = i;
-                    let y = wave[index] * 100 + height / 2 + sin(i) / 1; 
+                    let y = wave[index] * Math.random() * 100 + height / 2 + sin(i) / 1; 
                     vertex(x, y);
                     }
             }
             endShape();
-        
         break;
         case 5: 
+        if (amp > 247) {
+            rndSongGradient();
+        }
         //------------------------[SHAPE A.1]
         if (amp > 200) {
             beginShape();
@@ -496,6 +512,9 @@ function randomRockShape() {
     
     switch (rndSongInt) {
         case 1: 
+        if (amp > 220) {
+            rndSongGradient();
+        }
         //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
@@ -537,6 +556,9 @@ function randomRockShape() {
     }
         break; 
         case 2: 
+        if (amp > 220) {
+            rndSongGradient();
+        }
         //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
@@ -577,6 +599,9 @@ function randomRockShape() {
     }
         break;
         case 3: 
+        if (amp > 220) {
+            rndSongGradient();
+        }
         //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
@@ -589,7 +614,7 @@ function randomRockShape() {
             beginShape();
             for (let i = rndSongInt; i <= 180; i += rndSongInt) {
                 let index = floor(map(i, rndSongInt + 3, waveInt, rndSongInt, wave.length - 1));
-                let r = map(wave[index], 0, rndSongInt, 10 * rndSongInt, waveInt);
+                let r = map(wave[index], Math.random() * 10, rndSongInt, 10 * rndSongInt, waveInt);
                 let x = innerWidth * sin(i) * t - Math.random() * 1000;
                 let y = r * cos(i) + Math.random() * rndSongInt * 2;
                 vertex(x, y);
@@ -617,6 +642,9 @@ function randomRockShape() {
     }
         break;
         case 4: 
+        if (amp > 220) {
+            rndSongGradient();
+        }
         //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
@@ -658,6 +686,9 @@ function randomRockShape() {
     }
         break;
         case 5: 
+        if (amp > 220) {
+            rndSongGradient();
+        }
         //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
@@ -690,7 +721,7 @@ function randomRockShape() {
             beginShape();
             for (let i = 0; i <= 180; i += 0.1) {
                 let index = floor(map(i, waveInt, Math.random() * 2000, waveInt, wave.length - 1));
-                let r = map(wave[index], - Math.random() * 0.1000, rndSongInt + 2, rndSongInt, waveInt);
+                let r = map(wave[index], + Math.random() * 0.1000, rndSongInt + 2, rndSongInt, waveInt);
                 let x = r * sin(i) * t;
                 let y = r * cos(i) ;
                 vertex(x, y);
@@ -805,7 +836,15 @@ function generateArt() {
             particles.push(p);
         
             for (let i = 0; i < particles.length; i++) {
-                particles[i].update(amp > 230);
+                particles[i].update(amp > 190);
+                particles[i].show();
+            }
+          } else if (amp <= 190 && amp >= 150) {
+            let p = new popParticle();
+            particles.push(p);
+        
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update(amp < 190);
                 particles[i].show();
             }
           }
@@ -821,6 +860,14 @@ function generateArt() {
                 particles[i].update(amp > 230);
                 particles[i].show();
             }
+            } else if (amp <= 190 && amp >= 150) {
+                    let p = new rockParticle();
+                    particles.push(p);
+                
+                    for (let i = 0; i < particles.length; i++) {
+                        particles[i].update(amp > 190);
+                        particles[i].show();
+                    }
             }
         } 
     }
