@@ -12,11 +12,12 @@ let rockSong3;
 let rockSong4; 
 let rockSong5;
 
-//----------Waveform Variables 
+//----------Waveform/Particle Variables 
 let fft;
 let particles = [];
 
 //----------Random Variables 
+let rndTrackInt;
 let rndSongInt; 
 let particleInt;  
 let waveInt;
@@ -55,37 +56,38 @@ function preload() {
 //----------Selects what song will be played depending on the selected genre 
 function songPicker() {
     let selectedGenre = document.getElementById('genre-select').value;
+    
 
-    switch (rndSongInt) {
-        case 1:
+    switch (rndTrackInt) {
+        case 7:
         if (selectedGenre==='pop') {
             popSong1.play();
         } else if (selectedGenre==='rock') {
             rockSong1.play();
         }
         break;
-        case 2:
+        case 8:
         if (selectedGenre==='pop') {
             popSong2.play();
         } else if (selectedGenre==='rock') {
             rockSong2.play();
         }
         break;
-        case 3:
+        case 9:
         if (selectedGenre==='pop') {
             popSong3.play();
         } else if (selectedGenre==='rock') {
             rockSong3.play();
         }
         break;
-        case 4:
+        case 10:
         if (selectedGenre==='pop') {
             popSong4.play();
         } else if (selectedGenre==='rock') {
             rockSong4.play();
         }
         break;
-        case 5:
+        case 11:
         if (selectedGenre==='pop') {
             popSong5.play();
         } else if (selectedGenre==='rock') {
@@ -124,6 +126,7 @@ function randomIntFromInterval(min, max) {
 //----------Selects integers within specific ranges
 function randomIntegers() {
     rndSongInt = randomIntFromInterval(1, 6);
+    rndTrackInt = randomIntFromInterval(7, 12);
     particleInt = randomIntFromInterval(0.01000, 300);
     waveInt = randomIntFromInterval(300, 1000);
     }
@@ -131,13 +134,6 @@ function randomIntegers() {
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
 
 //Reference: The following 15 lines of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
-
-//----------Selects integers within specific ranges
-function randomIntegers() {
-    rndSongInt = randomIntFromInterval(1, 6);
-    particleInt = randomIntFromInterval(0.01000, 300);
-    waveInt = randomIntFromInterval(300, 1000);
-    }
 
 //----------Selects a random hexcode 
 let randomColor = () => {
@@ -156,7 +152,6 @@ let randomGradient = () => {
     let angle = Math.floor(Math.random() * 360);
     document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
 }
-
 
 //------------------------------------------\\PARTICLE GENERATION//-----------------------------//
 
@@ -217,28 +212,52 @@ class popParticle {
             stroke(colorOne);
             strokeWeight(Math.random() * 10);
             fill(colorTwo);
-            ellipse(this.pos.x, this.pos.y, Math.random() * particleInt);
+            ellipse(this.pos.x, this.pos.y, rndTrackInt + particleInt, Math.random() * rndSongInt * 2);
         } 
     }
 }
 
 //----------Defines the particles that are shown in the 'rock' genre 
 class rockParticle {
+
     constructor() {
+        let particleInt = randomIntFromInterval(300, 3000);
         let selectedGenre = document.getElementById('genre-select').value;
+
         this.pos = p5.Vector.random2D(Math.random() * 1).mult(Math.random() * 12);
         this.vel = createVector(Math.random() * 3, Math.random() * 20);
         this.acc = this.pos.copy().mult(random(0.1000, 0.1000));
         this.w = random(5, 10);
-     if (selectedGenre === 'rock') {
-            this.pos = p5.Vector.random2D(Math.random() * 1).mult(Math.random() * 12);
-            this.vel = createVector(Math.random() * 3, Math.random() * 20);
-            this.acc = this.pos.copy().mult(random(0.1000, 0.1000));
-            this.w = random(10, 100);
+
+        if (selectedGenre === 'rock' && rndSongInt === 1) {
+            this.pos = p5.Vector.random2D().mult(particleInt);
+            this.vel = createVector(Math.random() * 0.5000, Math.random() * 10);
+            this.acc = this.pos.copy().mult(random(0.01000, 0.02002));
+            this.w = random(Math.random() * 5, Math.random() * 5);
+        } else if (selectedGenre === 'rock' && rndSongInt === 2) {
+            this.pos = p5.Vector.random2D().mult(particleInt);
+            this.vel = createVector(Math.random() * 0.2000, Math.random() * 2);
+            this.acc = this.pos.copy().mult(random(0.10000, 0.20002));
+            this.w = random(Math.random() * 3, Math.random() * 10);
+        } else if (selectedGenre === 'rock' && rndSongInt === 3) {
+            this.pos = p5.Vector.random2D().mult(particleInt);
+            this.vel = createVector(Math.random() * 0.9000, Math.random() * 3000);
+            this.acc = this.pos.copy().mult(random(0.00400, 0.90002));
+            this.w = random(Math.random() * 6, Math.random() * 2);
+        } else if (selectedGenre === 'rock' && rndSongInt === 4) {
+            this.pos = p5.Vector.random2D().mult(particleInt);
+            this.vel = createVector(Math.random() * 0.2000, Math.random() * 700);
+            this.acc = this.pos.copy().mult(random(0.05400, 0.98002));
+            this.w = random(Math.random() * 4, Math.random() * 9);
+        } else if (selectedGenre === 'rock' && rndSongInt === 5) {
+            this.pos = p5.Vector.random2D().mult(particleInt);
+            this.vel = createVector(Math.random() * 1.2000, Math.random() * 1);
+            this.acc = this.pos.copy().mult(random(1.05400, 3.98002));
+            this.w = random(Math.random() * 2, Math.random() * 3);
         }
     }
 
-    //---------------------------pushes the particles away when the volume reaches a certain level
+    //-------pushes the particles away when the volume reaches a certain level
     update(cond) {
         this.vel.add(this.acc);
         this.pos.add(this.vel);
@@ -248,17 +267,17 @@ class rockParticle {
             this.pos.add(this.vel);
         }
     }
-   
-    //---------------------------Shows the particles on the canvas 
+
+    //--------Defines what will appear on the canvas 
     show() {
         let selectedGenre = document.getElementById('genre-select').value;
-      if (selectedGenre === 'rock') {
-            stroke(colorTwo);
-            strokeWeight(Math.random() * 1);
-            fill(colorOne);
-            line(this.pos.x, this.pos.y, Math.random() * 100, 1, 10, 5);
-        }
-    }
+        if (selectedGenre === 'rock') {
+              stroke(colorTwo);
+              strokeWeight(rndSongInt);
+              fill(colorThree);
+              rect(this.pos.x, this.pos.y, rndSongInt * particleInt, Math.random() * 100, 10);
+          }
+      }
 }
 
 //------------------------------------------\\WAVEFORM GENERATION//-----------------------------//
@@ -268,10 +287,15 @@ class rockParticle {
 
 //----------Defines the waveform shapes, colors and responses for the 'pop' genre 
 function randomPopShape() {
+
+   //'A' = Waveform when amplitude is above 200
+   //'B' = Waveform when amplitude is below 200
+
    let wave = fft.waveform();
 
     switch (rndSongInt) {
         case 1: 
+        //------------------------[SHAPE A]
         if (amp > 200) {
             beginShape();
                 stroke(colorThree);
@@ -285,6 +309,7 @@ function randomPopShape() {
             }
             endShape();
             } else if (amp < 200) {
+            //------------------------[SHAPE B]
             beginShape();
                 stroke(colorThree);
                     for (let i = 0; i < width; i++) {
@@ -295,9 +320,10 @@ function randomPopShape() {
                     }
             }
             endShape();
-           
+    
         break;
-        case 2:   
+        case 2: 
+        //------------------------[SHAPE A]  
         if (amp > 200) {
             beginShape();
                 stroke(colorThree);
@@ -308,6 +334,7 @@ function randomPopShape() {
                 vertex(x, y);
             }
             endShape();
+             //------------------------[SHAPE B]
             } else if (amp < 200) {
             beginShape();
                 stroke(colorThree);
@@ -321,6 +348,7 @@ function randomPopShape() {
             endShape();
         break;
         case 3: 
+        //------------------------[SHAPE A.1]
         if (amp > 200) {
             beginShape();
                 stroke(colorThree);
@@ -331,6 +359,7 @@ function randomPopShape() {
                 vertex(x, y);
             }
             endShape();
+            //------------------------[SHAPE A.2]
             beginShape();
             stroke(colorTwo);
             for (let i = 0; i < width; i++) {
@@ -340,8 +369,8 @@ function randomPopShape() {
             vertex(x, y);
             }
             endShape();
-
-        beginShape();
+            //------------------------[SHAPE A.3]
+            beginShape();
             stroke(colorOne);
             for (let i = 0; i < width; i++) {
             let index = floor(map(i, 10, width, 0, wave.length + 2));
@@ -349,7 +378,8 @@ function randomPopShape() {
             let y = wave[index] * 50 + height + sin(i) / 7; 
             vertex(x, y);
         }
-        endShape();
+            endShape();
+            //------------------------[SHAPE B]
             } else if (amp < 200) {
             beginShape();
                 stroke(colorThree);
@@ -364,6 +394,7 @@ function randomPopShape() {
     
         break;
         case 4: 
+        //------------------------[SHAPE A.1]
         if (amp > 200) {
             beginShape();
                 stroke(colorThree);
@@ -374,7 +405,7 @@ function randomPopShape() {
                 vertex(x, y);
             }
             endShape();
-
+            //------------------------[SHAPE A.2]
             beginShape();
             stroke(colorThree);
             for (let i = 0; i < width; i++) {
@@ -383,7 +414,8 @@ function randomPopShape() {
             let y = wave[index] * 50 + height / 2 + sin(i) / 2; 
             vertex(x, y);
         }
-        endShape();
+            endShape();
+            //------------------------[SHAPE B]
             } else if (amp < 200) {
             beginShape();
                 stroke(colorThree);
@@ -398,6 +430,7 @@ function randomPopShape() {
         
         break;
         case 5: 
+        //------------------------[SHAPE A.1]
         if (amp > 200) {
             beginShape();
                 stroke(colorThree);
@@ -408,7 +441,7 @@ function randomPopShape() {
                 vertex(x, y);
             }
             endShape();
-
+            //------------------------[SHAPE A.2]
             beginShape();
             stroke(colorTwo);
             for (let i = 0; i < width; i++) {
@@ -417,27 +450,28 @@ function randomPopShape() {
             let y = wave[index] * 80 + height / 10 + sin(i) / 1; 
             vertex(x, y);
         }
-        endShape();
-
-        beginShape();
-        stroke(colorOne);
-        for (let i = 0; i < width; i++) {
-        let index = floor(map(i, 10, width, 5, wave.length + 10));
-        let x = i;
-        let y = wave[index] * 90 + height / 5 + sin(i) / 2; 
-        vertex(x, y);
+            endShape();
+            //------------------------[SHAPE A.3]
+            beginShape();
+            stroke(colorOne);
+            for (let i = 0; i < width; i++) {
+            let index = floor(map(i, 10, width, 5, wave.length + 10));
+            let x = i;
+            let y = wave[index] * 90 + height / 5 + sin(i) / 2; 
+            vertex(x, y);
     }
-    endShape();
-
-    beginShape();
-    stroke(colorThree);
-    for (let i = 0; i < width; i++) {
-    let index = floor(map(i, 0, width, 2, wave.length + 10));
-    let x = i;
-    let y = wave[index] * 40 + height / 3 + sin(i) / 1; 
-    vertex(x, y);
+            endShape();
+            //------------------------[SHAPE A.4]
+            beginShape();
+            stroke(colorThree);
+            for (let i = 0; i < width; i++) {
+            let index = floor(map(i, 0, width, 2, wave.length + 10));
+            let x = i;
+            let y = wave[index] * 40 + height / 3 + sin(i) / 1; 
+            vertex(x, y);
 }
-endShape();
+            endShape();
+            //------------------------[SHAPE B]
             } else if (amp < 200) {
             beginShape();
                 stroke(colorThree);
@@ -456,18 +490,19 @@ endShape();
 //----------Defines the waveform shapes, colors and responses for the 'rock' genre 
 function randomRockShape() {
     let wave = fft.waveform();
-
+    
+    //'A' = Waveform when amplitude is above 200
+    //'B' = Waveform when amplitude is below 200
+    
     switch (rndSongInt) {
         case 1: 
-
+        //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
             frameRate(10);
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * 5);
             noFill();
-            
-        //---------------------------defines the shape being drawn 
         
          for (var t = -1; t <= 1; t += 2) {
             beginShape();
@@ -487,8 +522,7 @@ function randomRockShape() {
             strokeWeight(rndSongInt);
             fill(colorTwo);
     
-        //---------------------------defines the shape being drawn 
-        
+        //------------------------[SHAPE B]
          for (var t = -1; t <= 1; t += 2) {
             beginShape();
             for (let i = 0; i <= 180; i += 0.1) {
@@ -501,17 +535,15 @@ function randomRockShape() {
             endShape();
         }
     }
-
         break; 
         case 2: 
-     if (amp > 200) {
+        //------------------------[SHAPE A]
+        if (amp > 200) {
             stroke(colorOne);
             frameRate(10);
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * 5);
             noFill();
-            
-        //---------------------------defines the shape being drawn 
         
          for (var t = -1; t <= 1; t += 2) {
             beginShape();
@@ -530,7 +562,7 @@ function randomRockShape() {
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * 10 + rndSongInt);
             fill(colorTwo);
-        
+         //------------------------[SHAPE B]
          for (var t = -1; t <= 1; t += 2) {
             beginShape();
             for (let i = 0; i <= 180; i += 0.1) {
@@ -545,14 +577,13 @@ function randomRockShape() {
     }
         break;
         case 3: 
+        //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
             frameRate(10);
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * rndSongInt * Math.random() * 3);
             noFill();
-            
-        //---------------------------defines the shape being drawn 
         
          for (var t = -1; t <= 1; t += 2) {
             beginShape();
@@ -571,7 +602,7 @@ function randomRockShape() {
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * 10 + rndSongInt);
             fill(colorTwo);
-        
+         //------------------------[SHAPE B]
          for (var t = -1; t <= 1; t += 2) {
             beginShape();
             for (let i = 0; i <= 180; i += 0.1) {
@@ -586,14 +617,13 @@ function randomRockShape() {
     }
         break;
         case 4: 
+        //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
             frameRate(10);
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * 5);
             noFill();
-            
-        //---------------------------defines the shape being drawn 
         
          for (var t = - rndSongInt; t <= rndSongInt; t += rndSongInt) {
             beginShape();
@@ -613,7 +643,7 @@ function randomRockShape() {
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * 10 + rndSongInt);
             fill(colorTwo);
-        
+         //------------------------[SHAPE B]
          for (var t = - rndSongInt; t <= rndSongInt; t += rndSongInt) {
             beginShape();
             for (let i = 0; i <= waveInt; i += 0.1) {
@@ -628,16 +658,14 @@ function randomRockShape() {
     }
         break;
         case 5: 
-
+        //------------------------[SHAPE A]
         if (amp > 200) {
             stroke(colorOne);
             frameRate(10);
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * 5);
             noFill();
-            
-        //---------------------------defines the shape being drawn
-        
+       
          for (var t = -1; t <= 1; t += 2) {
             beginShape();
             for (let i = 0; i <= 180; i += 0.1) {
@@ -655,7 +683,7 @@ function randomRockShape() {
             translate(width / 2, height / 2);
             strokeWeight(Math.random() * 20);
     
-        //---------------------------defines the shape being drawn 
+        //------------------------[SHAPE B]
         let wave = fft.waveform();
         
          for (var t = - rndSongInt; t <= rndSongInt; t += rndSongInt) {
@@ -672,7 +700,6 @@ function randomRockShape() {
     }
     break;
      }
- 
     }
  
 //------------------------------------------\\BUTTONS//-----------------------------//
@@ -711,7 +738,6 @@ function mouseClicked() {
             canvas.remove();
             songStopper();
         }
-
     } 
 }
 
@@ -743,7 +769,7 @@ function generateArt() {
     
             randomPopShape();
            
-            if (amp >= 210) {
+            if (amp >= 190) {
             let p = new popParticle();
             particles.push(p);
         
@@ -756,7 +782,7 @@ function generateArt() {
     
             randomRockShape();
             
-            if (amp >= 220) {
+            if (amp >= 190) {
             let p = new rockParticle();
             particles.push(p);
         
