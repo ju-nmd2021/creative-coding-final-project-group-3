@@ -1,3 +1,6 @@
+//------------------------------------------\\VARIABLES//-----------------------------//
+
+//----------Audio Variables 
 let popSong1;
 let popSong2;
 let popSong3;
@@ -8,23 +11,34 @@ let rockSong2;
 let rockSong3;
 let rockSong4; 
 let rockSong5;
+
+//----------Waveform Variables 
 let fft;
 let particles = [];
-let state = 0; 
-let colorOne;
-let colorTwo;
-let colorThree;
-let button = document.getElementById('generateBtn');
-let homeContent = document.getElementById('home-content');
-let hexString = "0123456789abcdef";
+
+//----------Random Variables 
 let rndSongInt; 
 let particleInt;  
 let waveInt;
+
+//----------Color Variables 
+let colorOne;
+let colorTwo;
+let colorThree;
+let hexString = "0123456789abcdef";
+
+//----------Button Variables 
+let button = document.getElementById('generateBtn');
 let backButtonX = 30;
 let backButtonY = 880;
 
+//----------Display Variables
+let homeContent = document.getElementById('home-content');
+let state = 0; 
 
-//load audio source based on the genre
+//------------------------------------------\\AUDIO SOURCE SELECTION//-----------------------------//
+
+//----------Loads all audio sources
 function preload() {
     popSong1 = loadSound('/Audio Files/DuaLipa.mp3');
     popSong2 = loadSound('/Audio Files/Flowers.mp3');
@@ -38,41 +52,7 @@ function preload() {
     rockSong5 = loadSound('/Audio Files/TeenSpirit.mp3');
    };
 
-//REFERENCE: The following 4 lines were adapted from https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
-function randomIntegers() {
-    rndSongInt = randomIntFromInterval(1, 6);
-    particleInt = randomIntFromInterval(0.01000, 300);
-    waveInt = randomIntFromInterval(300, 1000);
-    }
-    
-function setup() {
-    randomIntegers();
-}
-
-function randomIntFromInterval(min, max) { 
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-
-//REFERENCE: The following 12 strings of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
-let randomColor = () => {
-    let hexCode = "#";
-    for( i=0; i<6; i++){
-        hexCode += hexString[Math.floor(Math.random() * hexString.length)];
-    }
-    return hexCode;
-}
-
-let randomGradient = () => {
-    colorOne = randomColor();
-    colorTwo = randomColor();
-    colorThree = randomColor();
-    let angle = Math.floor(Math.random() * 360);
-    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
-}
-
-
-
+//----------Selects what song will be played depending on the selected genre 
 function songPicker() {
     let selectedGenre = document.getElementById('genre-select').value;
 
@@ -115,6 +95,7 @@ function songPicker() {
         }
 }
 
+//----------Stops audio from being played 
 function songStopper() {
     popSong1.stop();
     rockSong1.stop();
@@ -128,7 +109,60 @@ function songStopper() {
     rockSong5.stop();
 }
 
-//REFERENCE: The particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
+//------------------------------------------\\RANDOM INTEGERS//-----------------------------//
+
+//REFERENCE: The following 13 lines were written referencing https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
+
+//----------Resets the random integers 
+function setup() {
+    randomIntegers();
+}
+//----------Resets the random integers 
+function randomIntFromInterval(min, max) { 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+//----------Selects integers within specific ranges
+function randomIntegers() {
+    rndSongInt = randomIntFromInterval(1, 6);
+    particleInt = randomIntFromInterval(0.01000, 300);
+    waveInt = randomIntFromInterval(300, 1000);
+    }
+
+//------------------------------------------\\COLOR GENERATION//-----------------------------//
+
+//Reference: The following 15 lines of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
+
+//----------Selects integers within specific ranges
+function randomIntegers() {
+    rndSongInt = randomIntFromInterval(1, 6);
+    particleInt = randomIntFromInterval(0.01000, 300);
+    waveInt = randomIntFromInterval(300, 1000);
+    }
+
+//----------Selects a random hexcode 
+let randomColor = () => {
+    let hexCode = "#";
+    for( i=0; i<6; i++){
+        hexCode += hexString[Math.floor(Math.random() * hexString.length)];
+    }
+    return hexCode;
+}
+
+//----------Generates a background gradient using three of the random hexcodes 
+let randomGradient = () => {
+    colorOne = randomColor();
+    colorTwo = randomColor();
+    colorThree = randomColor();
+    let angle = Math.floor(Math.random() * 360);
+    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
+}
+
+
+//------------------------------------------\\COLOR GENERATION//-----------------------------//
+
+//Reference: The particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
+
+//----------Defines the particles that are shown in the 'pop' genre
 class popParticle {
     constructor() {
         let particleInt = randomIntFromInterval(300, 3000);
@@ -188,6 +222,7 @@ class popParticle {
     }
 }
 
+//----------Defines the particles that are shown in the 'rock' genre 
 class rockParticle {
     constructor() {
         let selectedGenre = document.getElementById('genre-select').value;
@@ -226,8 +261,12 @@ class rockParticle {
     }
 }
 
+//------------------------------------------\\WAVEFORM GENERATION//-----------------------------//
 
-//REFERENCE: Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
+//Reference: Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
+//Reference: The waveform generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
+
+//----------Defines the waveform shapes, colors and responses for the 'pop' genre 
 function randomPopShape() {
    let wave = fft.waveform();
 
@@ -414,6 +453,7 @@ endShape();
     }
 }
 
+//----------Defines the waveform shapes, colors and responses for the 'rock' genre 
 function randomRockShape() {
     let wave = fft.waveform();
 
@@ -635,9 +675,9 @@ function randomRockShape() {
  
     }
  
-    
+//------------------------------------------\\BUTTONS//-----------------------------//
 
-//Generate Button triggers artwork 
+//----------Generate Button triggers the artwork 
 button.addEventListener('click', function() {
     let selectedGenre = document.getElementById('genre-select').value;
     setup();
@@ -663,9 +703,35 @@ button.addEventListener('click', function() {
     }
 });
 
+//----------'Back' button to return to the home state
+function mouseClicked() {
+    if (state === 1) {
+        if (mouseX > backButtonX && mouseX < backButtonX + 150 && mouseY > backButtonY && mouseY < backButtonY + 40) {
+            state = 0; 
+            canvas.remove();
+            songStopper();
+        }
 
+    } 
+}
 
-//REFERENCE: The waveform generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
+//----------Buttons displayed within the generation state 
+function artworkButtons() {
+    push();
+    fill(255, 255, 255);
+    rect(backButtonX, backButtonY, 140, 40);
+    stroke(255, 255, 255, 70)
+
+    fill(128, 128, 128);
+    textStyle(BOLD);
+    textSize(13);
+    text('BACK', backButtonX + 49, backButtonY + 26);
+    pop();
+}
+
+//------------------------------------------\\ARTWORK GENERATION//-----------------------------//
+
+//----------Generate function triggers the artwork 
 function generateArt() {
 
         let selectedGenre = document.getElementById('genre-select').value;
@@ -702,20 +768,7 @@ function generateArt() {
         } 
     }
 
-
-function mouseClicked() {
-    if (state === 1) {
-        if (mouseX > backButtonX && mouseX < backButtonX + 150 && mouseY > backButtonY && mouseY < backButtonY + 40) {
-            state = 0; 
-            canvas.remove();
-            songStopper();
-        }
-
-    } 
-}
-
-
-//Artwork is drawn onto canvas in the correct state 
+//----------Elements are drawn onto canvas when in the correct state 
 function draw() {
 if (state===1) {
     homeContent.style.display = "none";
@@ -728,19 +781,3 @@ if (state===1) {
     document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
 }
-
-function artworkButtons() {
-    push();
-    fill(255, 255, 255);
-    rect(backButtonX, backButtonY, 140, 40);
-    stroke(255, 255, 255, 70)
-
-    fill(128, 128, 128);
-    textStyle(BOLD);
-    textSize(13);
-    text('BACK', backButtonX + 49, backButtonY + 26);
-    pop();
-}
-
-
-
