@@ -732,11 +732,31 @@ button.addEventListener('click', function() {
 
 //----------'Back' button to return to the home state
 function mouseClicked() {
+    let selectedGenre = document.getElementById('genre-select').value;
+    setup();
     if (state === 1) {
         if (mouseX > backButtonX && mouseX < backButtonX + 150 && mouseY > backButtonY && mouseY < backButtonY + 40) {
             state = 0; 
             canvas.remove();
             songStopper();
+        } else if (mouseX > backButtonX + 160 && mouseX < backButtonX + 290 && mouseY > backButtonY && mouseY < backButtonY + 40) {
+            
+            songStopper();
+            if (selectedGenre === 'pop') {
+                state = 1;
+                songPicker();
+                createCanvas(innerWidth, innerHeight);
+                randomGradient();
+                artworkButtons();
+                fft = new p5.FFT();
+                } else if (selectedGenre ==='rock') {
+                state = 1;
+                songPicker();
+                createCanvas(innerWidth, innerHeight);
+                randomGradient();
+                artworkButtons();
+                fft = new p5.FFT();
+                }
         }
     } 
 }
@@ -752,6 +772,17 @@ function artworkButtons() {
     textStyle(BOLD);
     textSize(13);
     text('BACK', backButtonX + 49, backButtonY + 26);
+    pop();
+    
+    push();
+    fill(255, 255, 255);
+    rect(backButtonX + 160, backButtonY, 140, 40);
+    stroke(255, 255, 255, 70)
+
+    fill(colorTwo);
+    textStyle(BOLD);
+    textSize(13);
+    text(' + REGENERATE', backButtonX + 177, backButtonY + 26);
     pop();
 }
 
