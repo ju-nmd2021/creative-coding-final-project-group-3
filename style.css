@@ -88,7 +88,7 @@ main {
 }
 
 #generateBtn {
-    width: 20%;
+    width: 25%;
     font-family: sans-serif;
     background-color: transparent;
     color: white;
@@ -96,20 +96,21 @@ main {
     font-weight: 500;
     border-color: white;
     height: 50px;
+    font-size: medium;
 }
 
 #generateBtn:hover {
-    width: 20%;
+    width: 25%;
     cursor: pointer;
     font-family: sans-serif;
     background-color:blueviolet;
     color:cadetblue;
     font-weight: bold;
     font-weight: 500;
+    font-size: medium;
     border-color:cadetblue;
     height: 50px;
 }
-
 
 #child-top {
     width: 70%;
