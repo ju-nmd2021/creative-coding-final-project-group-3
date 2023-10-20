@@ -158,7 +158,7 @@ let randomGradient = () => {
 }
 
 
-//------------------------------------------\\COLOR GENERATION//-----------------------------//
+//------------------------------------------\\PARTICLE GENERATION//-----------------------------//
 
 //Reference: The particle generation from an audio source was adapted from https://www.youtube.com/watch?v=uk96O7N1Yo0&t=69s Accessed: 2023-09-20
 
