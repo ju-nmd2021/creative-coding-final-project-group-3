@@ -1,4 +1,8 @@
+
+
 //------------------------------------------\\VARIABLES//-----------------------------//
+
+let timestampInSeconds;
 
 //----------Audio Variables 
 let popSong1;
@@ -119,6 +123,7 @@ function songStopper() {
 //----------Resets the random integers 
 function setup() {
     randomIntegers();
+    timestampInSeconds = Math.floor(Date.now() / 1000);
 }
 //----------Resets the random integers 
 function randomIntFromInterval(min, max) { 
@@ -128,8 +133,8 @@ function randomIntFromInterval(min, max) {
 function randomIntegers() {
     rndSongInt = randomIntFromInterval(1, 6);
     rndTrackInt = randomIntFromInterval(7, 12);
-    particleInt = randomIntFromInterval(0.01000, 300);
-    waveInt = randomIntFromInterval(300, 1000);
+    particleInt = randomIntFromInterval(0.01000, timestampInSeconds);
+    waveInt = randomIntFromInterval(300, timestampInSeconds);
     }
 
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
@@ -875,6 +880,7 @@ function generateArt() {
 //----------Elements are drawn onto canvas when in the correct state 
 function draw() {
 if (state===1) {
+    nowSeconds = Math.floor(Date.now() / 1000)
     homeContent.style.display = "none";
     angleMode(DEGREES);
     imageMode(CENTER);
