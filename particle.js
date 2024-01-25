@@ -1,5 +1,5 @@
-class Particle() {
-    constructor(){
+class Particle {
+    constructor() {
      this.pos = createVector(random(width), random(height));
      this.vel = createVector(0, 0);
      this.acc = createVector(0, 0);
@@ -37,3 +37,23 @@ updatePrev() {
     this.prevPos.x = this.pos.x;
     this.prevPos.y = this.pos.y;
 };
+
+edges() {
+    if(this.pos.x > width) {
+        this.pos.x = 0;
+        this.updatePrevious;
+    }
+    if (this.pos.x < 0) {
+        this.pos.x = width;
+        this.updatePrev();
+    }
+    if (this.pos.y > height) {
+        this.pos.y = 0;
+        this.updatePrev();
+    }
+    if (this.pos.y < 0) {
+        this.pos.y = height;
+        this.updatePrev();
+    }
+ }
+}
