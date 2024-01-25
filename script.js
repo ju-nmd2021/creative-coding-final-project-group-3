@@ -172,7 +172,6 @@ let rndSongGradient = () => {
 //----------Defines the waveform shapes, colors and responses for the 'pop' genre 
 function randomPopShape() {
 
-
 //    let wave = fft.waveform();
 
     switch (rndSongInt) {
