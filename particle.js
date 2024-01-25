@@ -15,3 +15,15 @@ update() {
     this.acc.mult(0);
 }
 
+follow(vectors) {
+    let x = floor(this.pos.x / scl);
+    let y = floor(this.pos.y / scl);
+    let index = x + y * cols;
+    let force = vectors[index];
+    this.applyForce(force);
+}
+
+applyForce(force) {
+    this.acc.add(force);
+}
+
