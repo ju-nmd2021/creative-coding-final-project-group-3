@@ -3,6 +3,7 @@
 //------------------------------------------\\VARIABLES//-----------------------------//
 
 let timestampInSeconds;
+let changeThreshold = 300; 
 
 //----------Audio Variables 
 let popSong1;
@@ -19,7 +20,7 @@ let rockSong5;
 //------------Particle Variables
 
 let inc = 0.1;
-let scl = 10;
+let scl = 30;
 let cols, rows;
 let zoff = 0;
 let fr; 
@@ -28,6 +29,7 @@ let flowfield;
 
 //----------Waveform/Particle Variables 
 let fft;
+let amp;
 // let particles = [];
 
 //----------Random Variables 
@@ -132,9 +134,9 @@ function songStopper() {
 
 //----------Resets the random integers 
 function setup() {
+    fft = new p5.FFT();
     randomIntegers();
     timestampInSeconds = Math.floor(Date.now() / 1000);
-    fft = new p5.FFT();
 
 //Perlin Noise Grid 
     cols = floor(width / scl);
@@ -155,8 +157,6 @@ function randomIntFromInterval(min, max) {
 function randomIntegers() {
     rndSongInt = randomIntFromInterval(1, 6);
     rndTrackInt = randomIntFromInterval(7, 12);
-    particleInt = randomIntFromInterval(0.01000, 300);
-    waveInt = randomIntFromInterval(300, 1000);
     }
 
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
@@ -164,13 +164,21 @@ function randomIntegers() {
 //Reference: The following 15 lines of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
 
 //----------Selects a random hexcode 
+
+
+// let newColors = () => {
+//     randomColor();
+//     randomGradient();
+//     rndSongGradient();
+// }
+
 let randomColor = () => {
     let hexCode = "#";
     for( i=0; i<6; i++){
         hexCode += hexString[Math.floor(Math.random() * hexString.length)];
     }
     return hexCode;
-}
+    }
 
 //----------Generates a background gradient using three of the random hexcodes 
 let randomGradient = () => {
@@ -194,8 +202,9 @@ let rndSongGradient = () => {
 //----------Defines the waveform shapes, colors and responses for the 'pop' genre 
 function randomPopShape() {
     
-    let spectrum = fft.analyze;
-    let amplitude = fft.getEnergy("bass", "mid", "high");
+  
+    fft.analyze();
+    amp = fft.getEnergy(1, 300);
 
     // let modulatedLine = 
     // let modulatedColor 
@@ -203,27 +212,37 @@ function randomPopShape() {
 
     var yoff = 0;
 
-    for (var y = 0; y < rows; y++) {
-    var xoff = 0;
-    for (var x = 0; x < cols; x++) {
-      var index = x + y * cols;
-      var angle = noise(xoff, yoff, zoff) * TWO_PI * 4;
-      var v = p5.Vector.fromAngle(angle);
-      v.setMag(1);
-      flowfield[index] = v;
-      xoff += inc;
-      stroke(0, 50);
-      // push();
-      // translate(x * scl, y * scl);
-      // rotate(v.heading());
-      // strokeWeight(1);
-      // line(0, 0, scl, 0);
-      // pop();
+    if (amp > 180) {
+        for (let y = 0; y < rows; y++) {
+            let xoff = 0;
+            for (let x = 0; x < cols; x++) {
+              if (rndSongInt && amp < 210) {
+              var index = x - y * cols;
+              var angle = noise(xoff, yoff, zoff) * TWO_PI * 2;
+              } else {
+              var index = x + y * cols;
+              var angle = noise(xoff, yoff, zoff) * TWO_PI * 4;
+              }
+              var v = p5.Vector.fromAngle(angle);
+              v.setMag(1);
+              flowfield[index] = v;
+              xoff += inc;
+              stroke(0, 50);
+              strokeWeight (1)
+            //   push();
+            //   translate(x * scl, y * scl);
+            //   rotate(v.heading());
+            //   strokeWeight(1);
+            //   line(0, 0, scl, 0);
+            //   pop();
+            }
+              yoff += inc;
+        
+              zoff += 0.0003;
+            }
     }
-      yoff += inc;
 
-      zoff += 0.0003;
-    }
+    
 
     for (var i = 0; i < particles.length; i++) {
       particles[i].follow(flowfield);
@@ -239,6 +258,9 @@ function randomPopShape() {
 //----------Defines the waveform shapes, colors and responses for the 'rock' genre 
 function randomRockShape() {
 
+    // fft.analyze();
+    // amp = fft.getEnergy(20, 200);
+
     var yoff = 0;
 
     for (var y = 0; y < rows; y++) {
@@ -250,18 +272,18 @@ function randomRockShape() {
       v.setMag(1);
       flowfield[index] = v;
       xoff += inc;
-      stroke(0, 50);
-      // push();
-      // translate(x * scl, y * scl);
-      // rotate(v.heading());
-      // strokeWeight(1);
-      // line(0, 0, scl, 0);
-      // pop();
+      stroke(colorOne);
+    //   push();
+    //   translate(x * scl, y * scl);
+    //   rotate(v.heading());
+    //   strokeWeight(1);
+    //   line(0, 0, scl, 0);
+    //   pop();
       }
 
       yoff += inc;
 
-      zoff += 0.0003;
+      zoff += 0.0001;
     }
 
     for (var i = 0; i < particles.length; i++) {
@@ -273,7 +295,7 @@ function randomRockShape() {
 
   //  fr.html(floor(frameRate()));
    
-    }
+}
  
 //------------------------------------------\\BUTTONS//-----------------------------//
 
@@ -290,14 +312,12 @@ button.addEventListener('click', function() {
     createCanvas(innerWidth, innerHeight);
     randomGradient();
     artworkButtons();
-    fft = new p5.FFT();
     } else if (selectedGenre ==='rock') {
     state = 1;
     songPicker();
     createCanvas(innerWidth, innerHeight);
     randomGradient();
     artworkButtons();
-    fft = new p5.FFT();
     } else {
         alert('ERROR: Please select a genre');
     }
@@ -366,9 +386,6 @@ function generateArt() {
 
         let selectedGenre = document.getElementById('genre-select').value;
     
-        fft.analyze();
-        amp = fft.getEnergy(20, 200);
-    
         if (selectedGenre==='pop') {
     
             randomPopShape();
@@ -393,4 +410,4 @@ if (state===1) {
     let greyAngle = 210;
     document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
-}
+};
