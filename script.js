@@ -124,6 +124,7 @@ function songStopper() {
 function setup() {
     randomIntegers();
     timestampInSeconds = Math.floor(Date.now() / 1000);
+    fft = new p5.FFT();
 }
 //----------Resets the random integers 
 function randomIntFromInterval(min, max) { 
@@ -171,8 +172,13 @@ let rndSongGradient = () => {
 
 //----------Defines the waveform shapes, colors and responses for the 'pop' genre 
 function randomPopShape() {
+    
+    let spectrum = fft.analyze;
+    let amplitude = fft.getEnergy("bass", "mid", "high");
 
-//    let wave = fft.waveform();
+    // let modulatedLine = 
+    // let modulatedColor 
+    // let modulated
 
     switch (rndSongInt) {
         case 1: 
@@ -195,7 +201,7 @@ function randomPopShape() {
 
 //----------Defines the waveform shapes, colors and responses for the 'rock' genre 
 function randomRockShape() {
-    // let wave = fft.waveform();
+
     
     switch (rndSongInt) {
         case 1: 
