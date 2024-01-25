@@ -24,11 +24,16 @@ follow(vectors) {
 
 applyForce(force) {
     this.acc.add(force);
-}
+};
 
 show() {
     stroke(255, 10);
     strokeWeight(1);
     line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
     this.updatePrev();
-}
+};
+
+updatePrev() {
+    this.prevPos.x = this.pos.x;
+    this.prevPos.y = this.pos.y;
+};
