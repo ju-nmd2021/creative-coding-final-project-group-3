@@ -135,6 +135,17 @@ function setup() {
     randomIntegers();
     timestampInSeconds = Math.floor(Date.now() / 1000);
     fft = new p5.FFT();
+
+//Perlin Noise Grid 
+    cols = floor(width / scl);
+    rows = floor(height / scl);
+    fr = createP('');
+
+    flowfield = new Array(cols * rows);
+
+    for (var i = 0; i < 300; i++) {
+    particles[i] = new Particle();
+    }
 }
 //----------Resets the random integers 
 function randomIntFromInterval(min, max) { 
