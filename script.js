@@ -1,9 +1,9 @@
 
 
 //------------------------------------------\\VARIABLES//-----------------------------//
-
-let timestampInSeconds;
+let milli = new Date();
 let changeThreshold = 300; 
+
 
 //----------Audio Variables 
 let popSong1;
@@ -19,10 +19,10 @@ let rockSong5;
 
 //------------Particle Variables
 
-let inc = 0.1;
-let scl = 30;
+let inc;
+let scl = Math.random() * 10;
 let cols, rows;
-let zoff = 0;
+let zoff = Math.random() * 5;
 let fr; 
 let particles = [];
 let flowfield;
@@ -30,20 +30,18 @@ let flowfield;
 //----------Waveform/Particle Variables 
 let fft;
 let amp;
-// let particles = [];
 
 //----------Random Variables 
 let rndTrackInt;
 let rndSongInt; 
-let particleInt;  
-let waveInt;
 
 //----------Color Variables 
 let colorOne;
 let colorTwo;
 let colorThree;
-let hexString = "0123456789abcdef";
+let hexString = "0123456789ABCDEF";
 let angle;
+let alpha;
 
 //----------Button Variables 
 let button = document.getElementById('generateBtn');
@@ -74,7 +72,6 @@ function preload() {
 function songPicker() {
     let selectedGenre = document.getElementById('genre-select').value;
     
-
     switch (rndTrackInt) {
         case 7:
         if (selectedGenre==='pop') {
@@ -136,7 +133,7 @@ function songStopper() {
 function setup() {
     fft = new p5.FFT();
     randomIntegers();
-    timestampInSeconds = Math.floor(Date.now() / 1000);
+    let timeStampMilli = milli.getMilliseconds();
 
 //Perlin Noise Grid 
     cols = floor(width / scl);
@@ -145,7 +142,7 @@ function setup() {
 
     flowfield = new Array(cols * rows);
 
-    for (var i = 0; i < 300; i++) {
+    for (var i = 0; i < timeStampMilli; i++) {
     particles[i] = new Particle();
     }
 }
@@ -156,7 +153,8 @@ function randomIntFromInterval(min, max) {
 //----------Selects integers within specific ranges
 function randomIntegers() {
     rndSongInt = randomIntFromInterval(1, 6);
-    rndTrackInt = randomIntFromInterval(7, 12);
+    rndTrackInt = randomIntFromInterval(7, 12)
+    rndIncInt = randomIntFromInterval(0.1, 3);
     }
 
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
@@ -166,32 +164,31 @@ function randomIntegers() {
 //----------Selects a random hexcode 
 
 
-// let newColors = () => {
-//     randomColor();
-//     randomGradient();
-//     rndSongGradient();
-// }
-
-let randomColor = () => {
+let randomColor = (alpha) => {
     let hexCode = "#";
     for( i=0; i<6; i++){
         hexCode += hexString[Math.floor(Math.random() * hexString.length)];
     }
+    hexCode += alpha.toString(16).toUpperCase();
     return hexCode;
     }
 
 //----------Generates a background gradient using three of the random hexcodes 
 let randomGradient = () => {
-    colorOne = randomColor();
-    colorTwo = randomColor();
-    colorThree = randomColor();
+
+    let alpha = 255;
+    colorOne = randomColor(alpha);
+    colorTwo = randomColor(alpha);
+    colorThree = randomColor(alpha);
+    colorFour = randomColor(alpha);
     angle = Math.floor(Math.random() * 360);
-    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
+    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree}), ${colorFour}`;
+
 }
 
 let rndSongGradient = () => {
     angle = Math.floor(Math.random() * 360);
-    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree})`;
+    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree}), ${colorFour}`;
 }
 
 
@@ -204,7 +201,7 @@ function randomPopShape() {
     
   
     fft.analyze();
-    amp = fft.getEnergy(1, 300);
+    amp = fft.getEnergy(100, 500);
 
     // let modulatedLine = 
     // let modulatedColor 
@@ -218,17 +215,17 @@ function randomPopShape() {
             for (let x = 0; x < cols; x++) {
               if (rndSongInt && amp < 210) {
               var index = x - y * cols;
-              var angle = noise(xoff, yoff, zoff) * TWO_PI * 2;
+              var angle = noise(xoff, yoff, zoff) * TWO_PI * 1;
               } else {
               var index = x + y * cols;
-              var angle = noise(xoff, yoff, zoff) * TWO_PI * 4;
+              var angle = noise(xoff, yoff, zoff) * TWO_PI * 1;
               }
               var v = p5.Vector.fromAngle(angle);
-              v.setMag(1);
+              v.setMag(rndSongInt);
               flowfield[index] = v;
-              xoff += inc;
-              stroke(0, 50);
-              strokeWeight (1)
+              xoff += rndIncInt;
+            //   stroke(0, 50);
+            //   strokeWeight (1)
             //   push();
             //   translate(x * scl, y * scl);
             //   rotate(v.heading());
@@ -236,13 +233,12 @@ function randomPopShape() {
             //   line(0, 0, scl, 0);
             //   pop();
             }
-              yoff += inc;
+              yoff += rndIncInt;
         
-              zoff += 0.0003;
+              zoff += 0.0010;
             }
-    }
+    } 
 
-    
 
     for (var i = 0; i < particles.length; i++) {
       particles[i].follow(flowfield);
@@ -251,7 +247,8 @@ function randomPopShape() {
       particles[i].show();
     }
 
-  //  fr.html(floor(frameRate()));
+
+   fr.html(floor(frameRate()));
     
 }
 
@@ -261,18 +258,18 @@ function randomRockShape() {
     // fft.analyze();
     // amp = fft.getEnergy(20, 200);
 
-    var yoff = 0;
+    // var yoff = 0;
 
-    for (var y = 0; y < rows; y++) {
-    var xoff = 0;
-    for (var x = 0; x < cols; x++) {
-      var index = x + y * cols;
-      var angle = noise(xoff, yoff, zoff) * TWO_PI * 4;
-      var v = p5.Vector.fromAngle(angle);
-      v.setMag(1);
-      flowfield[index] = v;
-      xoff += inc;
-      stroke(colorOne);
+    // for (var y = 0; y < rows; y++) {
+    // var xoff = 0;
+    // for (var x = 0; x < cols; x++) {
+    //   var index = x + y * cols;
+    //   var angle = noise(xoff, yoff, zoff) * TWO_PI * 4;
+    //   var v = p5.Vector.fromAngle(angle);
+    //   v.setMag(1);
+    //   flowfield[index] = v;
+    //   xoff += inc;
+    //   stroke(colorOne);
     //   push();
     //   translate(x * scl, y * scl);
     //   rotate(v.heading());
@@ -281,21 +278,21 @@ function randomRockShape() {
     //   pop();
       }
 
-      yoff += inc;
+    //   yoff += inc;
 
-      zoff += 0.0001;
-    }
+    // //   zoff += 0.0001;
+    // }
 
-    for (var i = 0; i < particles.length; i++) {
-      particles[i].follow(flowfield);
-      particles[i].update();
-      particles[i].edges();
-      particles[i].show();
-    }
+    // for (var i = 0; i < particles.length; i++) {
+    //   particles[i].follow(flowfield);
+    //   particles[i].update();
+    //   particles[i].edges();
+    //   particles[i].show();
+    // }
 
   //  fr.html(floor(frameRate()));
    
-}
+// }
  
 //------------------------------------------\\BUTTONS//-----------------------------//
 
@@ -407,7 +404,8 @@ if (state===1) {
     generateArt();
     } else if (state===0) {
     homeContent.style.display = "flex";
-    let greyAngle = 210;
-    document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
+    // let greyAngle = 210;
+    // document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
+
 };

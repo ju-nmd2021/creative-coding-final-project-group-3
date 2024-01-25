@@ -1,5 +1,6 @@
 
 
+
 class Particle {
     constructor() {
      this.pos = createVector(random(width), random(height));
@@ -43,20 +44,33 @@ applyForce(force) {
 };
 
 show() {
-
+    let milli = new Date();
+    let timeStampMilli = milli.getMilliseconds();
 
     if (amp < 180) {
     stroke(colorThree);
-    } else if (amp > 180 && amp < 235) {
-    stroke(colorTwo);
-    } else if (amp > 235 && amp < 290) {
-    stroke(255, 255, 255);
-    }
-
     strokeWeight(Math.random() * 0.7);
+    } else if (amp > 180 && amp < 230) {
+    stroke(colorTwo);
+    strokeWeight(Math.random() * 1.7);
+    } else if (amp > 230 && amp < 290) {
+    stroke(colorOne);
+    fill(255, 255, 255);
+    strokeWeight(Math.random() * 1.7);
+    } 
+    
+    if (amp > 200 && timeStampMilli < 500) {
+    stroke(colorFour);
+    strokeWeight(Math.random() * rndSongInt);
+
+    }
 
     line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
     this.updatePrev();
+
+    if (alpha > 0) {
+        alpha -= 5; 
+      }
 };
 
 updatePrev() {
