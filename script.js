@@ -16,6 +16,16 @@ let rockSong3;
 let rockSong4; 
 let rockSong5;
 
+//------------Particle Variables
+
+let inc = 0.1;
+let scl = 10;
+let cols, rows;
+let zoff = 0;
+let fr; 
+let particles = [];
+let flowfield;
+
 //----------Waveform/Particle Variables 
 let fft;
 // let particles = [];
