@@ -50,7 +50,7 @@ h1 {
     font-family: sans-serif;
     color: white;
     font-weight: 500;
-    font-size: 75px;
+    font-size: 60px;
     padding: 0;
     margin: 0;
 }
@@ -69,17 +69,15 @@ p {
 
 #home-content {
     width: 40%;
-    height: 450px;
+    height: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-content: center;
     align-items: center;
-    border-color:aquamarine;
+    border-color: white;
     border-width: thick;
     border-style: solid;
-
-    
 }
 
 main {
@@ -128,7 +126,7 @@ main {
 }
 
 #child-bottom {
-    margin-bottom: 5%;
+    margin-bottom: 1%;
     width: 70%;
     display: flex;
     flex-direction: column;

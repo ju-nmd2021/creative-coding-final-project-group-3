@@ -20,7 +20,7 @@ let rockSong5;
 //------------Particle Variables
 
 let inc;
-let scl = Math.random() * 10;
+let scl = Math.random() * 30;
 let cols, rows;
 let zoff = Math.random() * 5;
 let fr; 
@@ -32,7 +32,6 @@ let fft;
 let amp;
 let spec;
 let number;
-let low;
 let even;
 let odd;
 
@@ -133,9 +132,10 @@ function songStopper() {
 //----------Resets the random integers 
 function setup() {
     clear();
-    fft = new p5.FFT(0, 1024);
+    fft = new p5.FFT(0, 512);
     randomIntegers();
     let timeStampMilli = milli.getMilliseconds();
+    let scl = rndSclInt;
 
 //Perlin Noise Grid 
     cols = floor(width / scl);
@@ -169,6 +169,7 @@ function randomIntegers() {
     // rndSongInt = randomIntFromInterval(1, 6);
     rndTrackInt = randomIntFromInterval(1, 10)
     rndIncInt = randomIntFromInterval(0.1, 3);
+    rndSclInt = randomIntFromInterval(3, 10)
     }
 
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
@@ -190,13 +191,19 @@ let randomColor = (alpha) => {
 //----------Generates a background gradient using three of the random hexcodes 
 let randomGradient = () => {
 
-    let alpha = 255;
-    colorOne = randomColor(alpha);
-    colorTwo = randomColor(alpha);
-    colorThree = randomColor(alpha);
-    colorFour = randomColor(alpha);
+    let alphaA = 255;
+    let alphaB = 60;
+
+    colorOne = randomColor(alphaA);
+    colorTwo = randomColor(alphaA);
+    colorThree = randomColor(alphaA);
+    colorFour = randomColor(alphaA);
+    BGcolorOne = randomColor(alphaB);
+    BGcolorTwo = randomColor(alphaB);
+    BGcolorThree = randomColor(alphaB);
+    BGcolorFour = randomColor(alphaB);
     angle = Math.floor(Math.random() * 360);
-    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree}), ${colorFour}`;
+    document.body.style.background = `linear-gradient(${angle}deg, ${BGcolorOne}, ${BGcolorTwo}, ${BGcolorThree}), ${BGcolorFour}`;
 
 }
 
@@ -213,8 +220,12 @@ let rndSongGradient = () => {
 //----------Defines the waveform shapes, colors and responses for the 'pop' genre 
 function randomShape() {
     
+
     fft.analyze();
     amp = fft.getEnergy(100, 500);
+
+
+
 
     // let modulatedLine = 
     // let modulatedColor 
@@ -364,9 +375,8 @@ if (state===1) {
     generateArt();
     } else {
     homeContent.style.display = "flex";
-    background(0);
-    // let greyAngle = 210;
-    // document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
+    let greyAngle = 210;
+    document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
 
 };

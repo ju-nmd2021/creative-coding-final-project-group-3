@@ -10,7 +10,12 @@ class Particle {
     }
 
 update() {
-    if (amp > 220) {
+    if (amp < 200) {
+        this.vel.add(this.acc);
+        this.vel.limit(this.maxspeed - 2);
+        this.pos.add(this.vel);
+        this.acc.mult(10);}
+    else if (amp > 220) {
     this.vel.add(this.acc);
     this.vel.limit(this.maxspeed);
     this.pos.add(this.vel);
@@ -39,8 +44,7 @@ follow(vectors) {
 
 applyForce(force) {
     this.acc.add(force);
-    
-};
+}
 
 show() {
     let milli = new Date();
@@ -59,11 +63,20 @@ show() {
     
     if (amp > 235 && timeStampMilli < 500 && number === odd) {
     stroke(colorFour);
-    strokeWeight(Math.random() * rndSongInt + 2);
-    line(Math.random() * 1000, this.prevPos, 100, Math.random() * this.prevPos);
+    strokeWeight(Math.random() * rndTrackInt + 2);
+    line(Math.random() * 1000, rndTrackInt, 100, Math.random() * rndTrackInt);
     }
 
+    // spec = fft.analyze();
+
+    // for (let i = 0; i < spec.length; i++) {
+    // let low = spec[i];
+    // let lowY = map(this.pos.x, this.pos.y, 20, low, this.prevPos.x);
+    // line(this.pos.x, lowY, this.prevPos.x, this.prevPos.y);
+    // }
+
     line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
+  
     this.updatePrev();
 
     if (alpha > 0) {
