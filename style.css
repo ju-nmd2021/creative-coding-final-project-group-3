@@ -1,4 +1,9 @@
 
+* {
+    scroll-behavior: none;
+    overflow: hidden;
+    
+}
 body {
     background-color: black;
     display: flex;

@@ -1,6 +1,5 @@
 
 
-
 class Particle {
     constructor() {
      this.pos = createVector(random(width), random(height));
@@ -50,19 +49,18 @@ show() {
     if (amp < 180) {
     stroke(colorThree);
     strokeWeight(Math.random() * 0.7);
-    } else if (amp > 180 && amp < 230) {
+    } else if (amp > 180 && amp < 229) {
     stroke(colorTwo);
     strokeWeight(Math.random() * 1.7);
     } else if (amp > 230 && amp < 290) {
     stroke(colorOne);
-    fill(255, 255, 255);
     strokeWeight(Math.random() * 1.7);
     } 
     
-    if (amp > 200 && timeStampMilli < 500) {
+    if (amp > 235 && timeStampMilli < 500 && number === odd) {
     stroke(colorFour);
-    strokeWeight(Math.random() * rndSongInt);
-
+    strokeWeight(Math.random() * rndSongInt + 2);
+    line(Math.random() * 1000, this.prevPos, 100, Math.random() * this.prevPos);
     }
 
     line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
@@ -97,3 +95,5 @@ edges() {
     }
  }
 }
+
+

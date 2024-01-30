@@ -30,10 +30,15 @@ let flowfield;
 //----------Waveform/Particle Variables 
 let fft;
 let amp;
+let spec;
+let number;
+let low;
+let even;
+let odd;
 
 //----------Random Variables 
 let rndTrackInt;
-let rndSongInt; 
+// let rndSongInt; 
 
 //----------Color Variables 
 let colorOne;
@@ -45,8 +50,11 @@ let alpha;
 
 //----------Button Variables 
 let button = document.getElementById('generateBtn');
-let backButtonX = 30;
-let backButtonY = 880;
+
+let buttonWidth = 130; 
+let buttonHeight = 40;
+let backButtonX = 20;
+let backButtonY = innerHeight - buttonHeight - 20;
 
 //----------Display Variables
 let homeContent = document.getElementById('home-content');
@@ -70,43 +78,36 @@ function preload() {
 
 //----------Selects what song will be played depending on the selected genre 
 function songPicker() {
-    let selectedGenre = document.getElementById('genre-select').value;
-    
     switch (rndTrackInt) {
-        case 7:
-        if (selectedGenre==='pop') {
+        case 1:
             popSong1.play();
-        } else if (selectedGenre==='rock') {
+        break;
+        case 2:
             rockSong1.play();
-        }
+        break;
+        case 3:
+            popSong2.play();
+        break;
+        case 4:
+            rockSong2.play();
+        break;
+        case 5:
+            popSong3.play();
+        break;
+        case 6:
+            rockSong3.play();
+        break;
+        case 7:
+            popSong4.play();
         break;
         case 8:
-        if (selectedGenre==='pop') {
-            popSong2.play();
-        } else if (selectedGenre==='rock') {
-            rockSong2.play();
-        }
+            rockSong4.play();
         break;
         case 9:
-        if (selectedGenre==='pop') {
-            popSong3.play();
-        } else if (selectedGenre==='rock') {
-            rockSong3.play();
-        }
+            popSong5.play();
         break;
         case 10:
-        if (selectedGenre==='pop') {
-            popSong4.play();
-        } else if (selectedGenre==='rock') {
-            rockSong4.play();
-        }
-        break;
-        case 11:
-        if (selectedGenre==='pop') {
-            popSong5.play();
-        } else if (selectedGenre==='rock') {
-            rockSong5.play();
-        }
+            rockSong5.play(); 
         break;
         }
 }
@@ -131,7 +132,8 @@ function songStopper() {
 
 //----------Resets the random integers 
 function setup() {
-    fft = new p5.FFT();
+    clear();
+    fft = new p5.FFT(0, 1024);
     randomIntegers();
     let timeStampMilli = milli.getMilliseconds();
 
@@ -145,15 +147,27 @@ function setup() {
     for (var i = 0; i < timeStampMilli; i++) {
     particles[i] = new Particle();
     }
+
+    number = timeStampMilli;
+
+    if(number % 2 == 0) {
+    number = even;
+    }
+    else {
+    number = odd;
+    }
 }
+
+
+
 //----------Resets the random integers 
 function randomIntFromInterval(min, max) { 
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 //----------Selects integers within specific ranges
 function randomIntegers() {
-    rndSongInt = randomIntFromInterval(1, 6);
-    rndTrackInt = randomIntFromInterval(7, 12)
+    // rndSongInt = randomIntFromInterval(1, 6);
+    rndTrackInt = randomIntFromInterval(1, 10)
     rndIncInt = randomIntFromInterval(0.1, 3);
     }
 
@@ -197,9 +211,8 @@ let rndSongGradient = () => {
 //Reference: Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
 
 //----------Defines the waveform shapes, colors and responses for the 'pop' genre 
-function randomPopShape() {
+function randomShape() {
     
-  
     fft.analyze();
     amp = fft.getEnergy(100, 500);
 
@@ -213,7 +226,7 @@ function randomPopShape() {
         for (let y = 0; y < rows; y++) {
             let xoff = 0;
             for (let x = 0; x < cols; x++) {
-              if (rndSongInt && amp < 210) {
+              if (rndTrackInt && amp < 210) {
               var index = x - y * cols;
               var angle = noise(xoff, yoff, zoff) * TWO_PI * 1;
               } else {
@@ -221,7 +234,7 @@ function randomPopShape() {
               var angle = noise(xoff, yoff, zoff) * TWO_PI * 1;
               }
               var v = p5.Vector.fromAngle(angle);
-              v.setMag(rndSongInt);
+              v.setMag(rndTrackInt);
               flowfield[index] = v;
               xoff += rndIncInt;
             //   stroke(0, 50);
@@ -249,104 +262,42 @@ function randomPopShape() {
 
 
    fr.html(floor(frameRate()));
-    
 }
 
-//----------Defines the waveform shapes, colors and responses for the 'rock' genre 
-function randomRockShape() {
 
-    // fft.analyze();
-    // amp = fft.getEnergy(20, 200);
-
-    // var yoff = 0;
-
-    // for (var y = 0; y < rows; y++) {
-    // var xoff = 0;
-    // for (var x = 0; x < cols; x++) {
-    //   var index = x + y * cols;
-    //   var angle = noise(xoff, yoff, zoff) * TWO_PI * 4;
-    //   var v = p5.Vector.fromAngle(angle);
-    //   v.setMag(1);
-    //   flowfield[index] = v;
-    //   xoff += inc;
-    //   stroke(colorOne);
-    //   push();
-    //   translate(x * scl, y * scl);
-    //   rotate(v.heading());
-    //   strokeWeight(1);
-    //   line(0, 0, scl, 0);
-    //   pop();
-      }
-
-    //   yoff += inc;
-
-    // //   zoff += 0.0001;
-    // }
-
-    // for (var i = 0; i < particles.length; i++) {
-    //   particles[i].follow(flowfield);
-    //   particles[i].update();
-    //   particles[i].edges();
-    //   particles[i].show();
-    // }
-
-  //  fr.html(floor(frameRate()));
-   
-// }
  
 //------------------------------------------\\BUTTONS//-----------------------------//
 
 //----------Generate Button triggers the artwork 
 button.addEventListener('click', function() {
-    let selectedGenre = document.getElementById('genre-select').value;
-    setup();
-
-    homeContent.style.display = "none";
-
-    if (selectedGenre === 'pop') {
-    state = 1;
+    state=1;
     songPicker();
     createCanvas(innerWidth, innerHeight);
-    randomGradient();
-    artworkButtons();
-    } else if (selectedGenre ==='rock') {
-    state = 1;
-    songPicker();
-    createCanvas(innerWidth, innerHeight);
-    randomGradient();
-    artworkButtons();
-    } else {
-        alert('ERROR: Please select a genre');
-    }
+    artworkButtons(); 
+
+    if (state===1) {
+        randomGradient();
+    } 
+
 });
+
 
 //----------'Back' button to return to the home state
 function mouseClicked() {
-    let selectedGenre = document.getElementById('genre-select').value;
     setup();
     if (state === 1) {
         if (mouseX > backButtonX && mouseX < backButtonX + 150 && mouseY > backButtonY && mouseY < backButtonY + 40) {
-            state = 0; 
+            state = 0;
             canvas.remove();
             songStopper();
         } else if (mouseX > backButtonX + 160 && mouseX < backButtonX + 290 && mouseY > backButtonY && mouseY < backButtonY + 40) {
-            
             songStopper();
-            if (selectedGenre === 'pop') {
-                state = 1;
-                songPicker();
-                createCanvas(innerWidth, innerHeight);
-                randomGradient();
-                artworkButtons();
-                fft = new p5.FFT();
-                } else if (selectedGenre ==='rock') {
-                state = 1;
-                songPicker();
-                createCanvas(innerWidth, innerHeight);
-                randomGradient();
-                artworkButtons();
-                fft = new p5.FFT();
-                }
+            fft = new p5.FFT(); 
+            state = 1;
+            songPicker();
+            createCanvas(innerWidth, innerHeight);
+            randomGradient();
+            artworkButtons();
         }
     } 
 }
@@ -355,43 +306,51 @@ function mouseClicked() {
 function artworkButtons() {
     push();
     fill(255, 255, 255);
-    rect(backButtonX, backButtonY, 140, 40);
+    rect(backButtonX + 10, backButtonY - 10, buttonWidth, buttonHeight);
     stroke(255, 255, 255, 70)
 
     fill(128, 128, 128);
     textStyle(BOLD);
     textSize(13);
-    text('BACK', backButtonX + 49, backButtonY + 26);
+    text('BACK', backButtonX + buttonWidth / 2 - 7, backButtonY + buttonHeight / 2 - 5);
     pop();
     
     push();
     fill(255, 255, 255);
-    rect(backButtonX + 160, backButtonY, 140, 40);
+    rect(backButtonX + 160, backButtonY - 10, buttonWidth, buttonHeight);
     stroke(255, 255, 255, 70)
 
-    fill(colorTwo);
+    fill(128, 128, 128);
     textStyle(BOLD);
     textSize(13);
-    text(' + REGENERATE', backButtonX + 177, backButtonY + 26);
+    text(' + REGENERATE', backButtonX + buttonWidth / 2 + 106, backButtonY + buttonHeight / 2 - 5);
     pop();
 }
 
 //------------------------------------------\\ARTWORK GENERATION//-----------------------------//
 
+// function lowSpec() {
+//     spec = fft.analyze();
+//     for (let i = 0; i < spec.length; i++) {
+//       low = spec[i];
+//     }
+
+//     if (low < 1) {
+//         stroke(colorOne || colorTwo || colorThree);
+//         rect(Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight);
+//         strokeWeight(Math.random() * 50);
+//     } else if (low > number) {
+//         line((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
+//         strokeWeight(Math.random() * rndTrackInt);
+//         stroke(255);
+//     }
+// }
+
 //----------Generate function triggers the artwork 
 function generateArt() {
-
-        let selectedGenre = document.getElementById('genre-select').value;
-    
-        if (selectedGenre==='pop') {
-    
-            randomPopShape();
+        randomShape();
+       
            
-        } else if (selectedGenre==='rock') {
-    
-            randomRockShape();
-            
-        } 
     }
 
 //----------Elements are drawn onto canvas when in the correct state 
@@ -401,9 +360,11 @@ if (state===1) {
     homeContent.style.display = "none";
     angleMode(DEGREES);
     imageMode(CENTER);
+    artworkButtons();
     generateArt();
-    } else if (state===0) {
+    } else {
     homeContent.style.display = "flex";
+    background(0);
     // let greyAngle = 210;
     // document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
