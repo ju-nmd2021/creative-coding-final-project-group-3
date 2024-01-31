@@ -12,22 +12,22 @@ class Particle {
 update() {
     if (amp < 200) {
         this.vel.add(this.acc);
-        this.vel.limit(this.maxspeed + 0.5);
+        this.vel.limit(this.maxspeed - 0.5);
         this.pos.add(this.vel);
-        this.acc.mult(3);}
+        this.acc.mult(Math.random() * rndTrackInt);}
     else if (amp > 220) {
     this.vel.add(this.acc);
-    this.vel.limit(this.maxspeed);
+    this.vel.limit(this.maxspeed + 1);
     this.pos.add(this.vel);
     this.acc.mult(0);
     } else if (amp > 190) {
         this.vel.add(this.acc);
-        this.vel.limit(this.maxspeed - 0.5);
+        this.vel.limit(this.maxspeed);
         this.pos.add(this.vel);
         this.acc.mult(0);
     } else if (amp < 180) {
         this.vel.add(this.acc);
-        this.vel.limit(this.maxspeed - 0.7);
+        this.vel.limit(this.maxspeed - 0.9);
         this.pos.add(this.vel);
         this.acc.mult(0);
     }
@@ -64,19 +64,19 @@ show() {
 
     if (amp < 180) {
     stroke(colorThree);
-    strokeWeight(Math.random() * 0.7);
+    strokeWeight(Math.random() * 1.5);
     } else if (amp > 180 && amp < 229) {
     stroke(colorTwo);
-    strokeWeight(Math.random() * 1.7);
-    } else if (amp > 230 && amp < 290) {
+    strokeWeight(Math.random() * 3.7);
+    } else if (amp > 240) {
     stroke(colorOne);
-    strokeWeight(Math.random() * 1.7);
+    strokeWeight(Math.random() * 8.7);
     } 
     
     if (amp > 235 && timeStampMilli < 500 && number === odd) {
     stroke(colorFour);
-    strokeWeight(Math.random() * rndTrackInt + 2);
-    line(Math.random() * 1000, rndTrackInt, 100, Math.random() * rndTrackInt);
+    strokeWeight(Math.random() * rndTrackInt + 4);
+    line(Math.random() * 1000, rndTrackInt, 100, Math.random() * rndTrackInt, Math.random() * rndTrackInt);
     }
 
   

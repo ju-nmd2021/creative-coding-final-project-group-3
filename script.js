@@ -1,7 +1,6 @@
 
 
 //------------------------------------------\\VARIABLES//-----------------------------//
-let milli = new Date();
 let changeThreshold = 300; 
 
 
@@ -129,12 +128,26 @@ function songStopper() {
 
 //REFERENCE: The following 13 lines were written referencing https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
 
+
+
+//----------Resets the random integers 
+function randomIntFromInterval(min, max) { 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+//----------Selects integers within specific ranges
+function randomIntegers() {
+    // rndSongInt = randomIntFromInterval(1, 6);
+    rndTrackInt = randomIntFromInterval(1, 10)
+    rndIncInt = randomIntFromInterval(0.1, 3);
+    rndSclInt = randomIntFromInterval(3, 7)
+    }
+
 //----------Resets the random integers 
 function setup() {
-    clear();
     fft = new p5.FFT();
-    randomIntegers();
+    let milli = new Date();
     let timeStampMilli = milli.getMilliseconds();
+    randomIntegers();
 
 //Perlin Noise Grid 
     cols = floor(width / 2);
@@ -159,19 +172,6 @@ function setup() {
     }
 }
 
-
-
-//----------Resets the random integers 
-function randomIntFromInterval(min, max) { 
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-//----------Selects integers within specific ranges
-function randomIntegers() {
-    // rndSongInt = randomIntFromInterval(1, 6);
-    rndTrackInt = randomIntFromInterval(1, 10)
-    rndIncInt = randomIntFromInterval(0.1, 3);
-    rndSclInt = randomIntFromInterval(3, 7)
-    }
 
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
 
@@ -221,16 +221,8 @@ let rndSongGradient = () => {
 //----------Defines the waveform shapes, colors and responses for the 'pop' genre 
 function randomShape() {
     
-
     fft.analyze();
     amp = fft.getEnergy(100, 300);
-
-
-
-
-    // let modulatedLine = 
-    // let modulatedColor 
-    // let modulated
 
     var yoff = 2;
 
@@ -249,17 +241,9 @@ function randomShape() {
               v.setMag(rndTrackInt);
               flowfield[index] = v;
               xoff += 0.1;
-            //   stroke(0, 50);
-            //   strokeWeight (1)
-            //   push();
-            //   translate(x * scl, y * scl);
-            //   rotate(v.heading());
-            //   strokeWeight(1);
-            //   line(0, 0, scl, 0);
-            //   pop();
             }
+
               yoff += 0.1;
-        
               zoff += 0.0010;
             }
     } 
@@ -282,13 +266,16 @@ function randomShape() {
 
 //----------Generate Button triggers the artwork 
 button.addEventListener('click', function() {
+    setup();
     state=1;
     songPicker();
     createCanvas(innerWidth, innerHeight);
     artworkButtons(); 
 
     if (state===1) {
+        randomIntegers();
         randomGradient();
+        generateArt();
     } 
 
 });
@@ -304,12 +291,15 @@ function mouseClicked() {
             songStopper();
         } else if (mouseX > backButtonX + 160 && mouseX < backButtonX + 290 && mouseY > backButtonY && mouseY < backButtonY + 40) {
             songStopper();
+            canvas.remove();
+            createCanvas(innerWidth, innerHeight);
             fft = new p5.FFT(); 
             state = 1;
             songPicker();
-            createCanvas(innerWidth, innerHeight);
+            randomIntegers();
             randomGradient();
             artworkButtons();
+            randomShape();
         }
     } 
 }
@@ -360,9 +350,7 @@ function artworkButtons() {
 
 //----------Generate function triggers the artwork 
 function generateArt() {
-        randomShape();
-       
-           
+        randomShape();   
     }
 
 //----------Elements are drawn onto canvas when in the correct state 
