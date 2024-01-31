@@ -6,23 +6,23 @@ let changeThreshold = 300;
 
 
 //----------Audio Variables 
-let popSong1;
-let popSong2;
-let popSong3;
-let popSong4;
-let popSong5;
-let rockSong1;
-let rockSong2;
-let rockSong3;
-let rockSong4; 
-let rockSong5;
+let Song1;
+let Song2;
+let Song3;
+let Song4;
+let Song5;
+let Song6;
+let Song7;
+let Song8;
+let Song9; 
+let Song10;
 
 //------------Particle Variables
 
 let inc;
-let scl = Math.random() * 30;
 let cols, rows;
-let zoff = Math.random() * 5;
+let zoff = 3;
+let scl = 2.5;
 let fr; 
 let particles = [];
 let flowfield;
@@ -63,66 +63,66 @@ let state = 0;
 
 //----------Loads all audio sources
 function preload() {
-    popSong1 = loadSound('/Audio Files/DuaLipa.mp3');
-    popSong2 = loadSound('/Audio Files/Flowers.mp3');
-    popSong3 = loadSound('/Audio Files/Daylight.mp3');
-    popSong4 = loadSound('/Audio Files/Lights.mp3');
-    popSong5 = loadSound('/Audio Files/Sunflower.mp3');
-    rockSong1 = loadSound('/Audio Files/ACDC.mp3');
-    rockSong2 = loadSound('/Audio Files/Mississippi.mp3');
-    rockSong3 = loadSound('/Audio Files/Bohemian.mp3');
-    rockSong4 = loadSound('/Audio Files/RocknRoll.mp3');
-    rockSong5 = loadSound('/Audio Files/TeenSpirit.mp3');
+    Song1 = loadSound('/Audio Files/HigherPower.mp3');
+    Song2 = loadSound('/Audio Files/Flowers.mp3');
+    Song3 = loadSound('/Audio Files/Daylight.mp3');
+    Song4 = loadSound('/Audio Files/Sorry.mp3');
+    Song5 = loadSound('/Audio Files/Sunflower.mp3');
+    Song6 = loadSound('/Audio Files/Midnight.mp3');
+    Song7 = loadSound('/Audio Files/Intentions.mp3');
+    Song8 = loadSound('/Audio Files/LetsomebodyGo.mp3');
+    Song9 = loadSound('/Audio Files/RocknRoll.mp3');
+    Song10 = loadSound('/Audio Files/BetterNow.mp3');
    };
 
 //----------Selects what song will be played depending on the selected genre 
 function songPicker() {
     switch (rndTrackInt) {
         case 1:
-            popSong1.play();
+            Song1.play();
         break;
         case 2:
-            rockSong1.play();
+            Song2.play();
         break;
         case 3:
-            popSong2.play();
+            Song3.play();
         break;
         case 4:
-            rockSong2.play();
+            Song4.play();
         break;
         case 5:
-            popSong3.play();
+            Song5.play();
         break;
         case 6:
-            rockSong3.play();
+            Song6.play();
         break;
         case 7:
-            popSong4.play();
+            Song7.play();
         break;
         case 8:
-            rockSong4.play();
+            Song8.play();
         break;
         case 9:
-            popSong5.play();
+            Song9.play();
         break;
         case 10:
-            rockSong5.play(); 
+            Song10.play(); 
         break;
         }
 }
 
 //----------Stops audio from being played 
 function songStopper() {
-    popSong1.stop();
-    rockSong1.stop();
-    popSong2.stop();
-    rockSong2.stop();
-    popSong3.stop();
-    rockSong3.stop();
-    popSong4.stop();
-    rockSong4.stop();
-    popSong5.stop();
-    rockSong5.stop();
+    Song1.stop();
+    Song2.stop();
+    Song3.stop();
+    Song4.stop();
+    Song5.stop();
+    Song6.stop();
+    Song7.stop();
+    Song8.stop();
+    Song9.stop();
+    Song10.stop();
 }
 
 //------------------------------------------\\RANDOM INTEGERS//-----------------------------//
@@ -132,14 +132,13 @@ function songStopper() {
 //----------Resets the random integers 
 function setup() {
     clear();
-    fft = new p5.FFT(0, 512);
+    fft = new p5.FFT();
     randomIntegers();
     let timeStampMilli = milli.getMilliseconds();
-    let scl = rndSclInt;
 
 //Perlin Noise Grid 
-    cols = floor(width / scl);
-    rows = floor(height / scl);
+    cols = floor(width / 2);
+    rows = floor(height / 2);
     fr = createP('');
 
     flowfield = new Array(cols * rows);
@@ -147,6 +146,8 @@ function setup() {
     for (var i = 0; i < timeStampMilli; i++) {
     particles[i] = new Particle();
     }
+
+//Find odd or even number from milliseconds
 
     number = timeStampMilli;
 
@@ -169,7 +170,7 @@ function randomIntegers() {
     // rndSongInt = randomIntFromInterval(1, 6);
     rndTrackInt = randomIntFromInterval(1, 10)
     rndIncInt = randomIntFromInterval(0.1, 3);
-    rndSclInt = randomIntFromInterval(3, 10)
+    rndSclInt = randomIntFromInterval(3, 7)
     }
 
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
@@ -222,7 +223,7 @@ function randomShape() {
     
 
     fft.analyze();
-    amp = fft.getEnergy(100, 500);
+    amp = fft.getEnergy(100, 300);
 
 
 
@@ -231,23 +232,23 @@ function randomShape() {
     // let modulatedColor 
     // let modulated
 
-    var yoff = 0;
+    var yoff = 2;
 
     if (amp > 180) {
         for (let y = 0; y < rows; y++) {
             let xoff = 0;
             for (let x = 0; x < cols; x++) {
-              if (rndTrackInt && amp < 210) {
-              var index = x - y * cols;
-              var angle = noise(xoff, yoff, zoff) * TWO_PI * 1;
+              if (amp < 210) {
+              var index = x + y * cols;
+              var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 4;
               } else {
               var index = x + y * cols;
-              var angle = noise(xoff, yoff, zoff) * TWO_PI * 1;
+              var angle = noise(xoff, yoff, zoff) * TWO_PI * Math.random() * 2;
               }
               var v = p5.Vector.fromAngle(angle);
               v.setMag(rndTrackInt);
               flowfield[index] = v;
-              xoff += rndIncInt;
+              xoff += 0.1;
             //   stroke(0, 50);
             //   strokeWeight (1)
             //   push();
@@ -257,7 +258,7 @@ function randomShape() {
             //   line(0, 0, scl, 0);
             //   pop();
             }
-              yoff += rndIncInt;
+              yoff += 0.1;
         
               zoff += 0.0010;
             }

@@ -12,9 +12,9 @@ class Particle {
 update() {
     if (amp < 200) {
         this.vel.add(this.acc);
-        this.vel.limit(this.maxspeed - 2);
+        this.vel.limit(this.maxspeed + 0.5);
         this.pos.add(this.vel);
-        this.acc.mult(10);}
+        this.acc.mult(3);}
     else if (amp > 220) {
     this.vel.add(this.acc);
     this.vel.limit(this.maxspeed);
@@ -44,6 +44,18 @@ follow(vectors) {
 
 applyForce(force) {
     this.acc.add(force);
+
+    // spec = fft.analyze();
+
+    // for (let i = 0; i < spec.length; i++) {
+    // let low = spec[i];
+    // let lowY = map(this.pos.x, this.pos.y, 20, low, this.prevPos.x);
+    // if (spec === 420) {
+    //     line(lowY, this.pos.x, this.pos.x, this.pos.y);
+    // }
+   
+
+    // }
 }
 
 show() {
@@ -67,13 +79,7 @@ show() {
     line(Math.random() * 1000, rndTrackInt, 100, Math.random() * rndTrackInt);
     }
 
-    // spec = fft.analyze();
-
-    // for (let i = 0; i < spec.length; i++) {
-    // let low = spec[i];
-    // let lowY = map(this.pos.x, this.pos.y, 20, low, this.prevPos.x);
-    // line(this.pos.x, lowY, this.prevPos.x, this.prevPos.y);
-    // }
+  
 
     line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
   
