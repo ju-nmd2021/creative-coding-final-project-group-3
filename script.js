@@ -1,8 +1,6 @@
 
 
 //------------------------------------------\\VARIABLES//-----------------------------//
-let changeThreshold = 300; 
-
 
 //----------Audio Variables 
 let Song1;
@@ -23,8 +21,8 @@ let cols, rows;
 let zoff = 3;
 let scl = 2.5;
 let fr; 
-let particles = [];
 let flowfield;
+let particles;
 
 //----------Waveform/Particle Variables 
 let fft;
@@ -36,6 +34,7 @@ let odd;
 
 //----------Random Variables 
 let rndTrackInt;
+let timeStampMilli;
 // let rndSongInt; 
 
 //----------Color Variables 
@@ -49,10 +48,19 @@ let alpha;
 //----------Button Variables 
 let button = document.getElementById('generateBtn');
 
+let backButton;
+let genButton;
+
 let buttonWidth = 130; 
 let buttonHeight = 40;
+
 let backButtonX = 20;
 let backButtonY = innerHeight - buttonHeight - 20;
+
+let genButtonX = 20;
+let genButtonY = innerHeight - buttonHeight - 20;
+
+let buttonsShown = false;
 
 //----------Display Variables
 let homeContent = document.getElementById('home-content');
@@ -142,23 +150,57 @@ function randomIntegers() {
     rndSclInt = randomIntFromInterval(3, 7)
     }
 
+
+//----------Buttons displayed within the generation state 
+// function artworkButtons() {
+    
+// }
+
 //----------Resets the random integers 
 function setup() {
     fft = new p5.FFT();
-    let milli = new Date();
-    let timeStampMilli = milli.getMilliseconds();
     randomIntegers();
 
-//Perlin Noise Grid 
+    if (buttonsShown === false && state === 1) {
+        backButton = createButton('BACK');
+        backButton.position(backButtonX + 10, backButtonY - 10);
+        backButton.size(buttonWidth, buttonHeight);
+        backButton.style('position', 'absolute');
+        backButton.style('z-index', '2');
+        backButton.style('color', 'grey');
+        backButton.style('font-size', '12px');
+        backButton.style('font-weight', 'bold');
+        backButton.style('background-color', 'white');
+    
+        genButton = createButton('+ REGENERATE');
+        genButton.position(genButtonX + 160, genButtonY - 10);
+        genButton.size(buttonWidth, buttonHeight);
+        genButton.style('position', 'absolute');
+        genButton.style('z-index', '2');
+        genButton.style('color', 'grey');
+        genButton.style('font-weight', 'bold');
+        genButton.style('font-size', '12px');
+        genButton.style('background-color', 'white');
+    
+        buttonsShown = true;
+        } 
+            
+
+    particles = [];
+
+    let milli = new Date();
+    timeStampMilli = milli.getMilliseconds();
+
+    for (var i = 0; i < timeStampMilli; i++) {
+    particles[i] = new Particle();
+    }
+
+    //Perlin Noise Grid 
     cols = floor(width / 2);
     rows = floor(height / 2);
     fr = createP('');
 
     flowfield = new Array(cols * rows);
-
-    for (var i = 0; i < timeStampMilli; i++) {
-    particles[i] = new Particle();
-    }
 
 //Find odd or even number from milliseconds
 
@@ -169,6 +211,16 @@ function setup() {
     }
     else {
     number = odd;
+    }
+
+}
+
+
+function removeButtons() {
+    if (buttonsShown) {
+        if (backButton) backButton.remove();
+        if (genButton) genButton.remove();
+        buttonsShown = false;
     }
 }
 
@@ -267,13 +319,11 @@ function randomShape() {
 //----------Generate Button triggers the artwork 
 button.addEventListener('click', function() {
     setup();
-    state=1;
+    state = 1;
     songPicker();
-    createCanvas(innerWidth, innerHeight);
-    artworkButtons(); 
-
+    createCanvas(innerWidth, innerHeight)
     if (state===1) {
-        randomIntegers();
+        setup();
         randomGradient();
         generateArt();
     } 
@@ -289,7 +339,7 @@ function mouseClicked() {
             state = 0;
             canvas.remove();
             songStopper();
-        } else if (mouseX > backButtonX + 160 && mouseX < backButtonX + 290 && mouseY > backButtonY && mouseY < backButtonY + 40) {
+        } else if (mouseX > genButtonX + 160 && mouseX < genButtonX + 290 && mouseY > backButtonY && mouseY < backButtonY + 40) {
             songStopper();
             canvas.remove();
             createCanvas(innerWidth, innerHeight);
@@ -298,36 +348,10 @@ function mouseClicked() {
             songPicker();
             randomIntegers();
             randomGradient();
-            artworkButtons();
-            randomShape();
         }
     } 
 }
 
-//----------Buttons displayed within the generation state 
-function artworkButtons() {
-    push();
-    fill(255, 255, 255);
-    rect(backButtonX + 10, backButtonY - 10, buttonWidth, buttonHeight);
-    stroke(255, 255, 255, 70)
-
-    fill(128, 128, 128);
-    textStyle(BOLD);
-    textSize(13);
-    text('BACK', backButtonX + buttonWidth / 2 - 7, backButtonY + buttonHeight / 2 - 5);
-    pop();
-    
-    push();
-    fill(255, 255, 255);
-    rect(backButtonX + 160, backButtonY - 10, buttonWidth, buttonHeight);
-    stroke(255, 255, 255, 70)
-
-    fill(128, 128, 128);
-    textStyle(BOLD);
-    textSize(13);
-    text(' + REGENERATE', backButtonX + buttonWidth / 2 + 106, backButtonY + buttonHeight / 2 - 5);
-    pop();
-}
 
 //------------------------------------------\\ARTWORK GENERATION//-----------------------------//
 
@@ -356,15 +380,14 @@ function generateArt() {
 //----------Elements are drawn onto canvas when in the correct state 
 function draw() {
 if (state===1) {
-    nowSeconds = Math.floor(Date.now() / 1000)
     homeContent.style.display = "none";
     angleMode(DEGREES);
     imageMode(CENTER);
-    artworkButtons();
     generateArt();
     } else {
     homeContent.style.display = "flex";
     let greyAngle = 210;
+    removeButtons();
     document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
 
