@@ -62,7 +62,12 @@ let backButtonY = innerHeight - buttonHeight - 20;
 let genButtonX = 20;
 let genButtonY = innerHeight - buttonHeight - 20;
 
+let screenButtonX = 20;
+let screenButtonY = innerHeight - buttonHeight - 20;
+
 let buttonsShown = false;
+
+let screenshotButton;
 
 //----------Display Variables
 let homeContent = document.getElementById('home-content');
@@ -205,6 +210,7 @@ function artworkButtons() {
         backButton.style('color', 'grey');
         backButton.style('font-size', '12px');
         backButton.style('font-weight', 'bold');
+        backButton.style('opacity', '0.5');
         backButton.style('background-color', 'white');
     
         genButton = createButton('+ REGENERATE');
@@ -216,19 +222,37 @@ function artworkButtons() {
         genButton.style('font-weight', 'bold');
         genButton.style('font-size', '12px');
         genButton.style('background-color', 'white');
+        genButton.style('opacity', '0.5');
+
+        screenshotButton = createButton('SAVE ARTWORK');
+        screenshotButton.position(screenButtonX + 1330, screenButtonY - 10);
+        screenshotButton.size(buttonWidth, buttonHeight);
+        screenshotButton.style('position', 'absolute');
+        screenshotButton.style('z-index', '2');
+        screenshotButton.style('color', 'grey');
+        screenshotButton.style('font-weight', 'bold');
+        screenshotButton.style('font-size', '12px');
+        screenshotButton.style('opacity', '0.5');
+        screenshotButton.style('background-color', 'white');
+        screenshotButton.mousePressed(captureArtwork);
     
         buttonsShown = true;
         } 
-}
+};
 
 
 function removeButtons() {
     if (buttonsShown) {
         if (backButton) backButton.remove();
         if (genButton) genButton.remove();
+        if (screenshotButton) screenshotButton.remove();
         buttonsShown = false;
     }
-}
+};
+
+function captureArtwork() {
+    saveCanvas(document.background, 'My Artwork', 'png')
+};
 
 
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
@@ -367,22 +391,22 @@ function mouseClicked() {
 
 //------------------------------------------\\ARTWORK GENERATION//-----------------------------//
 
-function lowSpec() {
-    spec = lowFFT.analyze(0.4, 212);
-    for (let i = 0; i < spec.length; i++) {
-      low = spec[i];
-    }
+// function lowSpec() {
+//     spec = lowFFT.analyze(0.4, 212);
+//     for (let i = 0; i < spec.length; i++) {
+//       low = spec[i];
+//     }
 
-    if (low < 1) {
-        stroke(255);
-        rect((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
-        strokeWeight(Math.random() * 50);
-    } else if (low > number) {
-        line((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
-        strokeWeight(Math.random() * rndTrackInt);
-        stroke(255);
-    }
-}
+//     if (low < 1) {
+//         stroke(255);
+//         rect((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
+//         strokeWeight(Math.random() * 50);
+//     } else if (low > number) {
+//         line((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
+//         strokeWeight(Math.random() * rndTrackInt);
+//         stroke(255);
+//     }
+// }
 
 //----------Generate function triggers the artwork 
 function generateArt() {

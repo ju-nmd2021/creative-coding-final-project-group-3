@@ -30,9 +30,12 @@ h2 {
 }
 
 h3 {
+    width: 80%;
     font-family: sans-serif;
     color: white;
+    justify-content: center;
     align-content: center;
+    align-items: center;
     opacity: 40%;
     font-weight: 100;
     padding: 0;
