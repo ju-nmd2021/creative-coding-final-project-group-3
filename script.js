@@ -26,6 +26,7 @@ let particles;
 
 //----------Waveform/Particle Variables 
 let fft;
+let lowFFT;
 let amp;
 let spec;
 let number;
@@ -35,6 +36,7 @@ let odd;
 //----------Random Variables 
 let rndTrackInt;
 let timeStampMilli;
+let rndUpInt;
 // let rndSongInt; 
 
 //----------Color Variables 
@@ -148,6 +150,7 @@ function randomIntegers() {
     rndTrackInt = randomIntFromInterval(1, 10)
     rndIncInt = randomIntFromInterval(0.1, 3);
     rndSclInt = randomIntFromInterval(3, 7)
+    rndUpInt = randomIntFromInterval(1, 5);
     }
 
 
@@ -158,32 +161,9 @@ function randomIntegers() {
 
 //----------Resets the random integers 
 function setup() {
-    fft = new p5.FFT();
+    lowFFT = new p5.FFT(0, 1024);
     randomIntegers();
-
-    if (buttonsShown === false && state === 1) {
-        backButton = createButton('BACK');
-        backButton.position(backButtonX + 10, backButtonY - 10);
-        backButton.size(buttonWidth, buttonHeight);
-        backButton.style('position', 'absolute');
-        backButton.style('z-index', '2');
-        backButton.style('color', 'grey');
-        backButton.style('font-size', '12px');
-        backButton.style('font-weight', 'bold');
-        backButton.style('background-color', 'white');
-    
-        genButton = createButton('+ REGENERATE');
-        genButton.position(genButtonX + 160, genButtonY - 10);
-        genButton.size(buttonWidth, buttonHeight);
-        genButton.style('position', 'absolute');
-        genButton.style('z-index', '2');
-        genButton.style('color', 'grey');
-        genButton.style('font-weight', 'bold');
-        genButton.style('font-size', '12px');
-        genButton.style('background-color', 'white');
-    
-        buttonsShown = true;
-        } 
+    artworkButtons();
             
 
     particles = [];
@@ -213,6 +193,32 @@ function setup() {
     number = odd;
     }
 
+}
+
+function artworkButtons() {
+    if (buttonsShown === false && state === 1) {
+        backButton = createButton('BACK');
+        backButton.position(backButtonX + 10, backButtonY - 10);
+        backButton.size(buttonWidth, buttonHeight);
+        backButton.style('position', 'absolute');
+        backButton.style('z-index', '2');
+        backButton.style('color', 'grey');
+        backButton.style('font-size', '12px');
+        backButton.style('font-weight', 'bold');
+        backButton.style('background-color', 'white');
+    
+        genButton = createButton('+ REGENERATE');
+        genButton.position(genButtonX + 160, genButtonY - 10);
+        genButton.size(buttonWidth, buttonHeight);
+        genButton.style('position', 'absolute');
+        genButton.style('z-index', '2');
+        genButton.style('color', 'grey');
+        genButton.style('font-weight', 'bold');
+        genButton.style('font-size', '12px');
+        genButton.style('background-color', 'white');
+    
+        buttonsShown = true;
+        } 
 }
 
 
@@ -273,30 +279,36 @@ let rndSongGradient = () => {
 //----------Defines the waveform shapes, colors and responses for the 'pop' genre 
 function randomShape() {
     
-    fft.analyze();
-    amp = fft.getEnergy(100, 300);
+    lowFFT.analyze();
+    amp = lowFFT.getEnergy(10, 280);
 
-    var yoff = 2;
+    var yoff = rndIncInt;
 
     if (amp > 180) {
         for (let y = 0; y < rows; y++) {
             let xoff = 0;
             for (let x = 0; x < cols; x++) {
-              if (amp < 210) {
+              if (amp < 190) {
               var index = x + y * cols;
-              var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 4;
-              } else {
+              var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1;
+              } else if (amp > 190 && amp < 210) {
+                var index = x + y * cols;
+                var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1; 
+             }   else if (amp > 210 && amp < 220) {
+                    var index = x + y * cols;
+                    var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1; }
+              else {
               var index = x + y * cols;
-              var angle = noise(xoff, yoff, zoff) * TWO_PI * Math.random() * 2;
+              var angle = noise(xoff, yoff, zoff) * TWO_PI * Math.random() * 1;
               }
               var v = p5.Vector.fromAngle(angle);
               v.setMag(rndTrackInt);
               flowfield[index] = v;
-              xoff += 0.1;
+              xoff += 0;
             }
 
-              yoff += 0.1;
-              zoff += 0.0010;
+              yoff += rndIncInt;
+              zoff += rndIncInt;
             }
     } 
 
@@ -355,22 +367,22 @@ function mouseClicked() {
 
 //------------------------------------------\\ARTWORK GENERATION//-----------------------------//
 
-// function lowSpec() {
-//     spec = fft.analyze();
-//     for (let i = 0; i < spec.length; i++) {
-//       low = spec[i];
-//     }
+function lowSpec() {
+    spec = lowFFT.analyze(0.4, 212);
+    for (let i = 0; i < spec.length; i++) {
+      low = spec[i];
+    }
 
-//     if (low < 1) {
-//         stroke(colorOne || colorTwo || colorThree);
-//         rect(Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight);
-//         strokeWeight(Math.random() * 50);
-//     } else if (low > number) {
-//         line((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
-//         strokeWeight(Math.random() * rndTrackInt);
-//         stroke(255);
-//     }
-// }
+    if (low < 1) {
+        stroke(255);
+        rect((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
+        strokeWeight(Math.random() * 50);
+    } else if (low > number) {
+        line((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
+        strokeWeight(Math.random() * rndTrackInt);
+        stroke(255);
+    }
+}
 
 //----------Generate function triggers the artwork 
 function generateArt() {
