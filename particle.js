@@ -1,5 +1,6 @@
 
 class Particle {
+    //Reference: The following Particle code was adapted from https://youtu.be/BjoM9oKOAKY Accessed: 2024-01-23
     constructor() {
      this.pos = createVector(random(width), random(height));
      this.vel = createVector(0, 0);
@@ -9,7 +10,7 @@ class Particle {
     }
 
 update() {
-    if (amp < 200) {
+    if (amp < 170) {
         this.vel.add(this.acc);
         this.vel.limit(this.maxspeed - 0.5);
         this.pos.add(this.vel);
@@ -25,12 +26,12 @@ update() {
         this.vel.limit(this.maxspeed + 5);
         this.pos.add(this.vel);
         this.acc.mult(2);}
-    else if (amp > 190) {
+    else if (amp < 190 && amp > 180) {
         this.vel.add(this.acc);
         this.vel.limit(this.maxspeed);
         this.pos.add(this.vel);
         this.acc.mult(0);
-    } else if (amp < 180) {
+    } else if (amp < 180 && amp > 170) {
         this.vel.add(this.acc);
         this.vel.limit(this.maxspeed + 0.5);
         this.pos.add(this.vel);
@@ -46,21 +47,8 @@ follow(vectors) {
     this.applyForce(force);
 };
 
-
 applyForce(force) {
     this.acc.add(force);
-
-    // spec = fft.analyze();
-
-    // for (let i = 0; i < spec.length; i++) {
-    // let low = spec[i];
-    // let lowY = map(this.pos.x, this.pos.y, 20, low, this.prevPos.x);
-    // if (spec === 420) {
-    //     line(lowY, this.pos.x, this.pos.x, this.pos.y);
-    // }
-   
-
-    // }
 }
 
 show() {
@@ -90,7 +78,6 @@ show() {
         line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
         }
 
-
     line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
   
     this.updatePrev();
@@ -106,6 +93,8 @@ updatePrev() {
 };
 
 edges() {
+    //------NOTE: The following code caused unwanted horizontal lines to shoot across the screen so it was disabled. 
+
     // if(this.pos.x > width) {
     //     this.pos.x = 0;
     //     this.updatePrevious;
@@ -124,5 +113,3 @@ edges() {
     // }
  }
 }
-
-

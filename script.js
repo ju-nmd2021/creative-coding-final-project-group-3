@@ -1,8 +1,9 @@
 
-
 //------------------------------------------\\VARIABLES//-----------------------------//
 
-//----------Audio Variables 
+//---Audio Variables 
+let fft;
+let amp;
 let Song1;
 let Song2;
 let Song3;
@@ -14,7 +15,7 @@ let Song8;
 let Song9; 
 let Song10;
 
-//------------Particle Variables
+//---Particle & Flowfield Variables
 
 let inc;
 let cols, rows;
@@ -24,59 +25,49 @@ let fr;
 let flowfield;
 let particles;
 
-//----------Waveform/Particle Variables 
-let fft;
-let lowFFT;
-let amp;
-let spec;
+//---Random Integer Variables 
+let rndTrackInt;
+let rndSclInt;
+let timeStampMilli;
+let rndUpInt;
 let number;
 let even;
 let odd;
 
-//----------Random Variables 
-let rndTrackInt;
-let timeStampMilli;
-let rndUpInt;
-// let rndSongInt; 
-
-//----------Color Variables 
+//---Color Variables 
 let colorOne;
 let colorTwo;
 let colorThree;
+
+let BGcolorOne;
+let BGcolorTwo;
+let BGcolorThree;
+
 let hexString = "0123456789ABCDEF";
 let angle;
 let alpha;
 
-//----------Button Variables 
+//---Button Variables 
 let button = document.getElementById('generateBtn');
-
 let backButton;
 let genButton;
-
 let buttonWidth = 130; 
 let buttonHeight = 40;
-
 let backButtonX = 20;
 let backButtonY = innerHeight - buttonHeight - 20;
-
 let genButtonX = 20;
 let genButtonY = innerHeight - buttonHeight - 20;
-
-let screenButtonX = 20;
-let screenButtonY = innerHeight - buttonHeight - 20;
-
 let buttonsShown = false;
 
-let screenshotButton;
-
-//----------Display Variables
+//---Display Variables
 let homeContent = document.getElementById('home-content');
 let state = 0; 
 
 //------------------------------------------\\AUDIO SOURCE SELECTION//-----------------------------//
 
-//----------Loads all audio sources
+//---Loads all audio sources
 function preload() {
+    //REFERENCE: The following sound functionality was written referencing https://stackoverflow.com/questions/43167907/sound-play-stop-pause Accessed: 2023-10-13
     Song1 = loadSound('/Audio Files/HigherPower.mp3');
     Song2 = loadSound('/Audio Files/Flowers.mp3');
     Song3 = loadSound('/Audio Files/Daylight.mp3');
@@ -89,8 +80,9 @@ function preload() {
     Song10 = loadSound('/Audio Files/BetterNow.mp3');
    };
 
-//----------Selects what song will be played depending on the selected genre 
+//---Selects what song will be played
 function songPicker() {
+    //Reference: Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
     switch (rndTrackInt) {
         case 1:
             Song1.play();
@@ -125,8 +117,9 @@ function songPicker() {
         }
 }
 
-//----------Stops audio from being played 
+//---Stops audio from being played 
 function songStopper() {
+    //REFERENCE: The following sound functionality was written referencing https://stackoverflow.com/questions/43167907/sound-play-stop-pause Accessed: 2023-10-13
     Song1.stop();
     Song2.stop();
     Song3.stop();
@@ -141,42 +134,33 @@ function songStopper() {
 
 //------------------------------------------\\RANDOM INTEGERS//-----------------------------//
 
-//REFERENCE: The following 13 lines were written referencing https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
-
-
-
-//----------Resets the random integers 
+//---Resets the random integers 
 function randomIntFromInterval(min, max) { 
+    //REFERENCE: The random integer functionality was written referencing https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
-//----------Selects integers within specific ranges
+//---Selects integers within specific ranges
 function randomIntegers() {
-    // rndSongInt = randomIntFromInterval(1, 6);
     rndTrackInt = randomIntFromInterval(1, 10)
     rndIncInt = randomIntFromInterval(0.1, 3);
     rndSclInt = randomIntFromInterval(3, 7)
     rndUpInt = randomIntFromInterval(1, 5);
     }
 
-
-//----------Buttons displayed within the generation state 
-// function artworkButtons() {
-    
-// }
-
-//----------Resets the random integers 
+//---Resets the random integers and sets up particle array
 function setup() {
-    lowFFT = new p5.FFT(0, 1024);
+    fft = new p5.FFT();
     randomIntegers();
     artworkButtons();
-            
-
-    particles = [];
-
+    
+    //Getting current milliseconds
     let milli = new Date();
     timeStampMilli = milli.getMilliseconds();
 
-    for (var i = 0; i < timeStampMilli; i++) {
+    //Reference: The following perlin flowfield setup code was adapted from https://youtu.be/BjoM9oKOAKY Accessed: 2024-01-23
+    //Particle Array
+    particles = [];
+    for (var i = 0; i < timeStampMilli / 3; i++) {
     particles[i] = new Particle();
     }
 
@@ -187,20 +171,19 @@ function setup() {
 
     flowfield = new Array(cols * rows);
 
-//Find odd or even number from milliseconds
-
+    //Reference: The following odd and even number code was adapted from https://www.programiz.com/javascript/examples/even-odd Accessed: 2024-01-30
+    //Find odd or even number from milliseconds
     number = timeStampMilli;
-
     if(number % 2 == 0) {
     number = even;
-    }
-    else {
+    } else {
     number = odd;
     }
-
 }
 
+//---Defines the buttons displayed during the artwork generation 
 function artworkButtons() {
+    //Reference: The following button implementation was adapted from https://p5js.org/reference/#/p5/createButton Accessed: 2024-02-01
     if (buttonsShown === false && state === 1) {
         backButton = createButton('BACK');
         backButton.position(backButtonX + 10, backButtonY - 10);
@@ -223,25 +206,14 @@ function artworkButtons() {
         genButton.style('font-size', '12px');
         genButton.style('background-color', 'white');
         genButton.style('opacity', '0.5');
-
-        screenshotButton = createButton('SAVE ARTWORK');
-        screenshotButton.position(screenButtonX + 1330, screenButtonY - 10);
-        screenshotButton.size(buttonWidth, buttonHeight);
-        screenshotButton.style('position', 'absolute');
-        screenshotButton.style('z-index', '2');
-        screenshotButton.style('color', 'grey');
-        screenshotButton.style('font-weight', 'bold');
-        screenshotButton.style('font-size', '12px');
-        screenshotButton.style('opacity', '0.5');
-        screenshotButton.style('background-color', 'white');
-        screenshotButton.mousePressed(captureArtwork);
     
         buttonsShown = true;
         } 
 };
 
-
+//---Function to remove the buttons when returning to the home screen
 function removeButtons() {
+    //Reference: The following removing of buttons implementation was adapted from https://www.w3schools.com/jsref/met_element_remove.asp Accessed: 2024-02-01
     if (buttonsShown) {
         if (backButton) backButton.remove();
         if (genButton) genButton.remove();
@@ -250,19 +222,11 @@ function removeButtons() {
     }
 };
 
-function captureArtwork() {
-    saveCanvas(document.background, 'My Artwork', 'png')
-};
-
-
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
 
-//Reference: The following 15 lines of code were adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
-
-//----------Selects a random hexcode 
-
-
+//---Selects a random hexcode 
 let randomColor = (alpha) => {
+    //Reference: The following coloring randomization code was adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
     let hexCode = "#";
     for( i=0; i<6; i++){
         hexCode += hexString[Math.floor(Math.random() * hexString.length)];
@@ -271,9 +235,9 @@ let randomColor = (alpha) => {
     return hexCode;
     }
 
-//----------Generates a background gradient using three of the random hexcodes 
+//---Generates a background gradient using three of the random hexcodes 
 let randomGradient = () => {
-
+    //Reference: The following coloring randomization code was adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
     let alphaA = 255;
     let alphaB = 60;
 
@@ -285,26 +249,18 @@ let randomGradient = () => {
     BGcolorTwo = randomColor(alphaB);
     BGcolorThree = randomColor(alphaB);
     BGcolorFour = randomColor(alphaB);
+
     angle = Math.floor(Math.random() * 360);
     document.body.style.background = `linear-gradient(${angle}deg, ${BGcolorOne}, ${BGcolorTwo}, ${BGcolorThree}), ${BGcolorFour}`;
-
 }
 
-let rndSongGradient = () => {
-    angle = Math.floor(Math.random() * 360);
-    document.body.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo}, ${colorThree}), ${colorFour}`;
-}
+//-------------------------------------\\FLOWFIELD GENERATION//-----------------------------//
 
-
-//------------------------------------------\\WAVEFORM GENERATION//-----------------------------//
-
-//Reference: Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
-
-//----------Defines the waveform shapes, colors and responses for the 'pop' genre 
+//---Defines the response of the flowfield based on certain amplitudes, random integers, and timestamp in milliseconds
 function randomShape() {
-    
-    lowFFT.analyze();
-    amp = lowFFT.getEnergy(10, 280);
+    //Reference: The following perlin flowfield code was adapted from https://youtu.be/BjoM9oKOAKY Accessed: 2024-01-23
+    fft.analyze();
+    amp = fft.getEnergy(10, 280);
 
     var yoff = rndIncInt;
 
@@ -316,13 +272,13 @@ function randomShape() {
               var index = x + y * cols;
               var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1;
               } else if (amp > 190 && amp < 210) {
-                var index = x + y * cols;
+                var index = x + y + cols;
                 var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1; 
              }   else if (amp > 210 && amp < 220) {
                     var index = x + y * cols;
                     var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1; }
               else {
-              var index = x + y * cols;
+              var index = x + y + cols;
               var angle = noise(xoff, yoff, zoff) * TWO_PI * Math.random() * 1;
               }
               var v = p5.Vector.fromAngle(angle);
@@ -347,12 +303,10 @@ function randomShape() {
 
    fr.html(floor(frameRate()));
 }
-
-
  
 //------------------------------------------\\BUTTONS//-----------------------------//
 
-//----------Generate Button triggers the artwork 
+//---Generate Artwork button triggers the artwork from the home screen
 button.addEventListener('click', function() {
     setup();
     state = 1;
@@ -363,11 +317,9 @@ button.addEventListener('click', function() {
         randomGradient();
         generateArt();
     } 
-
 });
 
-
-//----------'Back' button to return to the home state
+//---'Back' button to return to the home state & '+Regenerate' button to trigger new artwork
 function mouseClicked() {
     setup();
     if (state === 1) {
@@ -388,43 +340,19 @@ function mouseClicked() {
     } 
 }
 
-
 //------------------------------------------\\ARTWORK GENERATION//-----------------------------//
 
-// function lowSpec() {
-//     spec = lowFFT.analyze(0.4, 212);
-//     for (let i = 0; i < spec.length; i++) {
-//       low = spec[i];
-//     }
-
-//     if (low < 1) {
-//         stroke(255);
-//         rect((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
-//         strokeWeight(Math.random() * 50);
-//     } else if (low > number) {
-//         line((Math.random() * innerWidth, Math.random() * innerHeight, Math.random() * innerWidth, Math.random() * innerHeight));
-//         strokeWeight(Math.random() * rndTrackInt);
-//         stroke(255);
-//     }
-// }
-
-//----------Generate function triggers the artwork 
-function generateArt() {
-        randomShape();   
-    }
-
-//----------Elements are drawn onto canvas when in the correct state 
+//---Elements are drawn onto canvas when in the correct state 
 function draw() {
 if (state===1) {
     homeContent.style.display = "none";
     angleMode(DEGREES);
     imageMode(CENTER);
-    generateArt();
+    randomShape();
     } else {
     homeContent.style.display = "flex";
     let greyAngle = 210;
     removeButtons();
     document.body.style.background = `linear-gradient(${greyAngle}deg, black, grey)`;
     }
-
 };
