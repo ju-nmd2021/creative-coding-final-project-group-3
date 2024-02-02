@@ -43,7 +43,8 @@ let BGcolorThree;
 
 let hexString = "0123456789ABCDEF";
 let angle;
-let alpha;
+let alphaA;
+let alphaB;
 
 //---Button Variables 
 let button = document.getElementById('generateBtn');
@@ -194,8 +195,8 @@ let randomColor = (alpha) => {
 //---Generates a background gradient using three of the random hexcodes 
 let randomGradient = () => {
     //Reference: The following coloring randomization code was adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
-    let alphaA = 255;
-    let alphaB = 60;
+    alphaA = 110;
+    alphaB = 70;
 
     colorOne = randomColor(alphaA);
     colorTwo = randomColor(alphaA);
@@ -308,7 +309,7 @@ function artworkButtons() {
         backButton.style('color', 'grey');
         backButton.style('font-size', '12px');
         backButton.style('font-weight', 'bold');
-        backButton.style('opacity', '0.5');
+        backButton.style('opacity', '0.8');
         backButton.style('background-color', 'white');
     
         genButton = createButton('+ REGENERATE');
@@ -320,7 +321,7 @@ function artworkButtons() {
         genButton.style('font-weight', 'bold');
         genButton.style('font-size', '12px');
         genButton.style('background-color', 'white');
-        genButton.style('opacity', '0.5');
+        genButton.style('opacity', '0.8');
     
         buttonsShown = true;
         } 
@@ -346,6 +347,7 @@ if (state===1) {
     angleMode(DEGREES);
     imageMode(CENTER);
     randomShape();
+    
     } else {
     homeContent.style.display = "flex";
     let greyAngle = 210;
