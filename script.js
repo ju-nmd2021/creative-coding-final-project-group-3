@@ -1,6 +1,5 @@
 
 //------------------------------------------\\VARIABLES//-----------------------------//
-
 //---Audio Variables 
 let fft;
 let amp;
@@ -16,7 +15,6 @@ let Song9;
 let Song10;
 
 //---Particle & Flowfield Variables
-
 let inc;
 let cols, rows;
 let zoff = 3;
@@ -63,8 +61,9 @@ let buttonsShown = false;
 let homeContent = document.getElementById('home-content');
 let state = 0; 
 
-//------------------------------------------\\AUDIO SOURCE SELECTION//-----------------------------//
 
+
+//------------------------------------------\\AUDIO SOURCE SELECTION//-----------------------------//
 //---Loads all audio sources
 function preload() {
     //REFERENCE: The following sound functionality was written referencing https://stackoverflow.com/questions/43167907/sound-play-stop-pause Accessed: 2023-10-13
@@ -78,8 +77,7 @@ function preload() {
     Song8 = loadSound('/Audio Files/LetsomebodyGo.mp3');
     Song9 = loadSound('/Audio Files/RocknRoll.mp3');
     Song10 = loadSound('/Audio Files/BetterNow.mp3');
-   };
-
+};
 //---Selects what song will be played
 function songPicker() {
     //Reference: Switch functionality was referenced from https://www.w3schools.com/js/js_switch.asp Accesed: 2023-10-13
@@ -115,8 +113,7 @@ function songPicker() {
             Song10.play(); 
         break;
         }
-}
-
+};
 //---Stops audio from being played 
 function songStopper() {
     //REFERENCE: The following sound functionality was written referencing https://stackoverflow.com/questions/43167907/sound-play-stop-pause Accessed: 2023-10-13
@@ -130,23 +127,23 @@ function songStopper() {
     Song8.stop();
     Song9.stop();
     Song10.stop();
-}
+};
+
+
 
 //------------------------------------------\\RANDOM INTEGERS//-----------------------------//
-
 //---Resets the random integers 
 function randomIntFromInterval(min, max) { 
     //REFERENCE: The random integer functionality was written referencing https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript Accessed: 2023-10-13
     return Math.floor(Math.random() * (max - min + 1) + min);
-}
+};
 //---Selects integers within specific ranges
 function randomIntegers() {
     rndTrackInt = randomIntFromInterval(1, 10)
     rndIncInt = randomIntFromInterval(0.1, 3);
     rndSclInt = randomIntFromInterval(3, 7)
     rndUpInt = randomIntFromInterval(1, 5);
-    }
-
+};
 //---Resets the random integers and sets up particle array
 function setup() {
     fft = new p5.FFT();
@@ -179,51 +176,11 @@ function setup() {
     } else {
     number = odd;
     }
-}
-
-//---Defines the buttons displayed during the artwork generation 
-function artworkButtons() {
-    //Reference: The following button implementation was adapted from https://p5js.org/reference/#/p5/createButton Accessed: 2024-02-01
-    if (buttonsShown === false && state === 1) {
-        backButton = createButton('BACK');
-        backButton.position(backButtonX + 10, backButtonY - 10);
-        backButton.size(buttonWidth, buttonHeight);
-        backButton.style('position', 'absolute');
-        backButton.style('z-index', '2');
-        backButton.style('color', 'grey');
-        backButton.style('font-size', '12px');
-        backButton.style('font-weight', 'bold');
-        backButton.style('opacity', '0.5');
-        backButton.style('background-color', 'white');
-    
-        genButton = createButton('+ REGENERATE');
-        genButton.position(genButtonX + 160, genButtonY - 10);
-        genButton.size(buttonWidth, buttonHeight);
-        genButton.style('position', 'absolute');
-        genButton.style('z-index', '2');
-        genButton.style('color', 'grey');
-        genButton.style('font-weight', 'bold');
-        genButton.style('font-size', '12px');
-        genButton.style('background-color', 'white');
-        genButton.style('opacity', '0.5');
-    
-        buttonsShown = true;
-        } 
 };
 
-//---Function to remove the buttons when returning to the home screen
-function removeButtons() {
-    //Reference: The following removing of buttons implementation was adapted from https://www.w3schools.com/jsref/met_element_remove.asp Accessed: 2024-02-01
-    if (buttonsShown) {
-        if (backButton) backButton.remove();
-        if (genButton) genButton.remove();
-        if (screenshotButton) screenshotButton.remove();
-        buttonsShown = false;
-    }
-};
+
 
 //------------------------------------------\\COLOR GENERATION//-----------------------------//
-
 //---Selects a random hexcode 
 let randomColor = (alpha) => {
     //Reference: The following coloring randomization code was adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
@@ -233,8 +190,7 @@ let randomColor = (alpha) => {
     }
     hexCode += alpha.toString(16).toUpperCase();
     return hexCode;
-    }
-
+};
 //---Generates a background gradient using three of the random hexcodes 
 let randomGradient = () => {
     //Reference: The following coloring randomization code was adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
@@ -252,10 +208,11 @@ let randomGradient = () => {
 
     angle = Math.floor(Math.random() * 360);
     document.body.style.background = `linear-gradient(${angle}deg, ${BGcolorOne}, ${BGcolorTwo}, ${BGcolorThree}), ${BGcolorFour}`;
-}
+};
+
+
 
 //-------------------------------------\\FLOWFIELD GENERATION//-----------------------------//
-
 //---Defines the response of the flowfield based on certain amplitudes, random integers, and timestamp in milliseconds
 function randomShape() {
     //Reference: The following perlin flowfield code was adapted from https://youtu.be/BjoM9oKOAKY Accessed: 2024-01-23
@@ -302,10 +259,11 @@ function randomShape() {
 
 
    fr.html(floor(frameRate()));
-}
+};
  
-//------------------------------------------\\BUTTONS//-----------------------------//
 
+
+//------------------------------------------\\BUTTONS//-------------------------------------//
 //---Generate Artwork button triggers the artwork from the home screen
 button.addEventListener('click', function() {
     setup();
@@ -318,7 +276,6 @@ button.addEventListener('click', function() {
         generateArt();
     } 
 });
-
 //---'Back' button to return to the home state & '+Regenerate' button to trigger new artwork
 function mouseClicked() {
     setup();
@@ -338,10 +295,50 @@ function mouseClicked() {
             randomGradient();
         }
     } 
-}
+};
+//---Defines the buttons displayed during the artwork generation 
+function artworkButtons() {
+    //Reference: The following button implementation was adapted from https://p5js.org/reference/#/p5/createButton Accessed: 2024-02-01
+    if (buttonsShown === false && state === 1) {
+        backButton = createButton('BACK');
+        backButton.position(backButtonX + 10, backButtonY - 10);
+        backButton.size(buttonWidth, buttonHeight);
+        backButton.style('position', 'absolute');
+        backButton.style('z-index', '2');
+        backButton.style('color', 'grey');
+        backButton.style('font-size', '12px');
+        backButton.style('font-weight', 'bold');
+        backButton.style('opacity', '0.5');
+        backButton.style('background-color', 'white');
+    
+        genButton = createButton('+ REGENERATE');
+        genButton.position(genButtonX + 160, genButtonY - 10);
+        genButton.size(buttonWidth, buttonHeight);
+        genButton.style('position', 'absolute');
+        genButton.style('z-index', '2');
+        genButton.style('color', 'grey');
+        genButton.style('font-weight', 'bold');
+        genButton.style('font-size', '12px');
+        genButton.style('background-color', 'white');
+        genButton.style('opacity', '0.5');
+    
+        buttonsShown = true;
+        } 
+};
+//---Function to remove the buttons when returning to the home screen
+function removeButtons() {
+    //Reference: The following removing of buttons implementation was adapted from https://www.w3schools.com/jsref/met_element_remove.asp Accessed: 2024-02-01
+    if (buttonsShown) {
+        if (backButton) backButton.remove();
+        if (genButton) genButton.remove();
+        if (screenshotButton) screenshotButton.remove();
+        buttonsShown = false;
+    }
+};
+
+
 
 //------------------------------------------\\ARTWORK GENERATION//-----------------------------//
-
 //---Elements are drawn onto canvas when in the correct state 
 function draw() {
 if (state===1) {
