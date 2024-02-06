@@ -76,7 +76,7 @@ function preload() {
     Song6 = loadSound('/Audio Files/Midnight.mp3');
     Song7 = loadSound('/Audio Files/Intentions.mp3');
     Song8 = loadSound('/Audio Files/LetsomebodyGo.mp3');
-    Song9 = loadSound('/Audio Files/RocknRoll.mp3');
+    Song9 = loadSound('/Audio Files/Changes.mp3');
     Song10 = loadSound('/Audio Files/BetterNow.mp3');
 };
 //---Selects what song will be played
@@ -227,29 +227,28 @@ function randomShape() {
             let xoff = 0;
             for (let x = 0; x < cols; x++) {
               if (amp < 190) {
-              var index = x + y * cols;
-              var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1;
-              } else if (amp > 190 && amp < 210) {
-                var index = x + y + cols;
-                var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1; 
-             }   else if (amp > 210 && amp < 220) {
-                    var index = x + y * cols;
-                    var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 1; }
-              else {
-              var index = x + y + cols;
-              var angle = noise(xoff, yoff, zoff) * TWO_PI * Math.random() * 1;
-              }
-              var v = p5.Vector.fromAngle(angle);
-              v.setMag(rndTrackInt);
-              flowfield[index] = v;
-              xoff += 0;
-            }
+                var index = x + y * cols;
+                var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 2;
+                } else if (amp > 190 && amp < 210) {
+                var index = x + y * cols;
+                var angle = noise(xoff, yoff, zoff) / TWO_PI * Math.random() * 2; 
+                }  else if (amp > 210 && amp < 220) {
+                var index = x + y * cols;
+                var angle = noise(xoff, yoff, zoff) + TWO_PI * Math.random() * 2; }
+                else {
+                var index = x + y * cols;
+                var angle = noise(xoff, yoff, zoff) * TWO_PI * Math.random() * 2;
+                }
 
-              yoff += rndIncInt;
-              zoff += rndIncInt;
-            }
+                var v = p5.Vector.fromAngle(angle);
+                v.setMag(rndTrackInt);
+                flowfield[index] = v;
+                xoff += 0;
+                }
+                yoff += rndIncInt;
+                zoff += rndIncInt;
+                }
     } 
-
 
     for (var i = 0; i < particles.length; i++) {
       particles[i].follow(flowfield);
@@ -257,7 +256,6 @@ function randomShape() {
       particles[i].edges();
       particles[i].show();
     }
-
 
    fr.html(floor(frameRate()));
 };
