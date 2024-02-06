@@ -82,10 +82,9 @@ show() {
   
     this.updatePrev();
 
-    if (alpha > 0) {
-        alpha -= 5; 
-      }
 };
+
+
 
 updatePrev() {
     this.prevPos.x = this.pos.x;
@@ -112,4 +111,6 @@ edges() {
     //     this.updatePrev();
     // }
  }
+
+ 
 }

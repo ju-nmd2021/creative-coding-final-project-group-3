@@ -195,8 +195,8 @@ let randomColor = (alpha) => {
 //---Generates a background gradient using three of the random hexcodes 
 let randomGradient = () => {
     //Reference: The following coloring randomization code was adapted from https://proxlight.hashnode.dev/random-gradient-generator-javascript-tutorial Accessed: 2023-10-13
-    alphaA = 110;
-    alphaB = 70;
+    alphaA = 220;
+    alphaB = 80;
 
     colorOne = randomColor(alphaA);
     colorTwo = randomColor(alphaA);
@@ -274,7 +274,7 @@ button.addEventListener('click', function() {
     if (state===1) {
         setup();
         randomGradient();
-        generateArt();
+        randomShape();
     } 
 });
 //---'Back' button to return to the home state & '+Regenerate' button to trigger new artwork
@@ -332,7 +332,6 @@ function removeButtons() {
     if (buttonsShown) {
         if (backButton) backButton.remove();
         if (genButton) genButton.remove();
-        if (screenshotButton) screenshotButton.remove();
         buttonsShown = false;
     }
 };
