@@ -84,8 +84,6 @@ show() {
 
 };
 
-
-
 updatePrev() {
     this.prevPos.x = this.pos.x;
     this.prevPos.y = this.pos.y;

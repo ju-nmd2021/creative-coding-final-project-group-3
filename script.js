@@ -75,7 +75,7 @@ function preload() {
     Song5 = loadSound('/Audio Files/Sunflower.mp3');
     Song6 = loadSound('/Audio Files/Midnight.mp3');
     Song7 = loadSound('/Audio Files/Intentions.mp3');
-    Song8 = loadSound('/Audio Files/LetsomebodyGo.mp3');
+    Song8 = loadSound('/Audio Files/Paradise.mp3');
     Song9 = loadSound('/Audio Files/Changes.mp3');
     Song10 = loadSound('/Audio Files/BetterNow.mp3');
 };
@@ -158,6 +158,8 @@ function setup() {
     //Reference: The following perlin flowfield setup code was adapted from https://youtu.be/BjoM9oKOAKY Accessed: 2024-01-23
     //Particle Array
     particles = [];
+    
+    if (amp < 200) {}
     for (var i = 0; i < timeStampMilli / 3; i++) {
     particles[i] = new Particle();
     }
@@ -344,8 +346,8 @@ if (state===1) {
     angleMode(DEGREES);
     imageMode(CENTER);
     randomShape();
-    
     } else {
+    canvas.remove();
     homeContent.style.display = "flex";
     let greyAngle = 210;
     removeButtons();
