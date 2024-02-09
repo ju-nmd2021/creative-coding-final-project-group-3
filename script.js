@@ -73,11 +73,11 @@ function preload() {
     Song3 = loadSound('/Audio Files/Daylight.mp3');
     Song4 = loadSound('/Audio Files/Sorry.mp3');
     Song5 = loadSound('/Audio Files/Sunflower.mp3');
-    Song6 = loadSound('/Audio Files/Midnight.mp3');
+    Song6 = loadSound('/Audio Files/Sticks.mp3');
     Song7 = loadSound('/Audio Files/Intentions.mp3');
     Song8 = loadSound('/Audio Files/Paradise.mp3');
     Song9 = loadSound('/Audio Files/Changes.mp3');
-    Song10 = loadSound('/Audio Files/BetterNow.mp3');
+    Song10 = loadSound('/Audio Files/Worried.mp3');
 };
 //---Selects what song will be played
 function songPicker() {

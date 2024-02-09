@@ -14,7 +14,7 @@ update() {
         this.vel.add(this.acc);
         this.vel.limit(this.maxspeed - 0.5);
         this.pos.add(this.vel);
-        this.acc.mult(rndUpInt);
+        this.acc.mult(2);
     }
     else if (amp > 220 && amp < 240) {
     this.vel.add(this.acc);
@@ -36,7 +36,7 @@ update() {
         this.vel.limit(this.maxspeed + 0.5);
         this.pos.add(this.vel);
         this.acc.mult(0);
-    }
+        }
 };
 
 follow(vectors) {
@@ -69,19 +69,16 @@ show() {
     if (amp > 235 && timeStampMilli < 500 && number === odd) {
     stroke(colorFour);
     strokeWeight(Math.random() * rndTrackInt + 4);
-    line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
     }
 
     if (amp > 235 && timeStampMilli > 500 && number === even) {
         stroke(colorThree);
         strokeWeight(Math.random() * rndTrackInt + 12);
-        line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
         }
 
     line(this.pos.x, this.pos.y, this.prevPos.x, this.prevPos.y);
   
     this.updatePrev();
-
 };
 
 updatePrev() {
@@ -109,6 +106,4 @@ edges() {
     //     this.updatePrev();
     // }
  }
-
- 
 }
